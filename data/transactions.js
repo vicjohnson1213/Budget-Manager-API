@@ -17,11 +17,33 @@ function getById(transactionId) {
     });
 }
 
-function getAll() {
+function getAll(year, month) {
     return new Promise((resolve, reject) => {
         var query = 'CALL spTransactionGetAll();';
 
         pool.query(query, (err, results) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+
+            resolve(results[0]);
+        });
+    });
+}
+
+function getMonth(year, month) {
+    return new Promise((resolve, reject) => {
+        var query = 'CALL spTransactionGetMonth(?);';
+        var fullDate;
+
+        if (year && month) {
+            fullDate = year + '/' + month + '/' + 1;
+        }
+
+        var params = [fullDate];
+
+        pool.query(query, params, (err, results) => {
             if (err) {
                 reject(err);
                 return;
@@ -97,6 +119,7 @@ function deleteById(transactionId) {
 module.exports = {
     getById: getById,
     getAll: getAll,
+    getMonth: getMonth,
     create: create,
     update: update,
     deleteById: deleteById

@@ -19,14 +19,17 @@ router.post('/', (req, res) => {
 });
 
 router.get('/', (req, res) => {
-    db.transactions.getAll()
+    var year = req.query.year,
+        month = req.query.month;
+
+    db.transactions.getMonth(year, month)
         .then((transactions) => {
             res.json(transactions);
         })
         .catch((err) => {
             res.sendStatus(500);
         });
-})
+});
 
 router.get('/:transactionId', (req, res) => {
     db.transactions.getById(req.params.transactionId)

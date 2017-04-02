@@ -24,7 +24,7 @@ router.get('/', (req, res) => {
         .catch((err) => {
             res.sendStatus(500);
         });
-})
+});
 
 router.get('/:budgetId', (req, res) => {
     db.budgets.getById(req.params.budgetId)

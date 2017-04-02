@@ -24,7 +24,7 @@ router.get('/', (req, res) => {
         .catch((err) => {
             res.sendStatus(500);
         });
-})
+});
 
 router.get('/:taxCreditId', (req, res) => {
     db.taxCredits.getById(req.params.taxCreditId)

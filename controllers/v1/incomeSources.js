@@ -26,7 +26,7 @@ router.get('/', (req, res) => {
         .catch((err) => {
             res.sendStatus(500);
         });
-})
+});
 
 router.get('/:incomeSourceId', (req, res) => {
     db.incomeSources.getById(req.params.incomeSourceId)

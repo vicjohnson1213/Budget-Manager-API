@@ -1,8 +1,10 @@
 DELIMITER ;;
-DROP PROCEDURE IF EXISTS `spTransactionGetAll`;;
-CREATE PROCEDURE `spTransactionGetAll` ()
+DROP PROCEDURE IF EXISTS `spTransactionGetMonth`;;
+CREATE PROCEDURE `spTransactionGetAll` (IN `searchDate` DATE)
 BEGIN
-    SELECT * FROM `Transaction` ORDER BY `date` ASC;
+    SELECT * FROM `Transaction`
+    WHERE YEAR(`date`) = YEAR(`searchDate`) AND MONTH(`date`) = MONTH(`searchDate`)
+    ORDER BY `date` ASC;
 END;;
 DELIMITER ;
 
