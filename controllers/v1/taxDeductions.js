@@ -1,5 +1,6 @@
 var router = require('express').Router(),
-    db = require('../../data/db');
+    db = require('../../data/db'),
+    dto = require('../../helpers/dto');
 
 router.post('/', (req, res) => {
     var taxDeduction = {
@@ -8,8 +9,9 @@ router.post('/', (req, res) => {
     };
 
     db.taxDeductions.create(taxDeduction)
-        .then((taxDeductions) => {
-            res.json(taxDeductions);
+        .then(() => {
+            dto.buildFinances()
+                .then((finances) => res.json(finances));
         })
         .catch((err) => {
             res.sendStatus(500);
@@ -48,8 +50,9 @@ router.put('/:taxDeductionId', (req, res) => {
     };
 
     db.taxDeductions.update(taxDeduction)
-        .then((taxDeductions) => {
-            res.json(taxDeductions);
+        .then(() => {
+            dto.buildFinances()
+                .then((finances) => res.json(finances));
         })
         .catch((err) => {
             res.sendStatus(500);
@@ -58,8 +61,9 @@ router.put('/:taxDeductionId', (req, res) => {
 
 router.delete('/:taxDeductionId', (req, res) => {
     db.taxDeductions.deleteById(req.params.taxDeductionId)
-        .then((taxDeductions) => {
-            res.json(taxDeductions);
+        .then(() => {
+            dto.buildFinances()
+                .then((finances) => res.json(finances));
         })
         .catch((err) => {
             res.sendStatus(500);

@@ -3,11 +3,13 @@ var router = require('express').Router(),
 
 router.post('/', (req, res) => {
     var budget = {
-        categoryId: req.body.categoryId,
-        amount: req.body.amount
+        budgetCategoryId: req.body.budgetCategoryId,
+        name: req.body.name,
+        amount: req.body.amount,
+        isMonthlyPayment: req.body.isMonthlyPayment
     };
 
-    db.budgets.create(budget)
+    db.budgetItems.create(budget)
         .then((budgets) => {
             res.json(budgets);
         })
@@ -17,7 +19,7 @@ router.post('/', (req, res) => {
 });
 
 router.get('/', (req, res) => {
-    db.budgets.getAll()
+    db.budgetItems.getAll()
         .then((budgets) => {
             res.json(budgets);
         })
@@ -27,7 +29,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/:budgetId', (req, res) => {
-    db.budgets.getById(req.params.budgetId)
+    db.budgetItems.getById(req.params.budgetId)
         .then((budget) => {
             if (budget) {
                 res.json(budget);
@@ -43,11 +45,13 @@ router.get('/:budgetId', (req, res) => {
 router.put('/:budgetId', (req, res) => {
     var budget = {
         id: req.params.budgetId,
-        categoryId: req.body.categoryId,
-        amount: req.body.amount
+        budgetCategoryId: req.body.budgetCategoryId,
+        name: req.body.name,
+        amount: req.body.amount,
+        isMonthlyPayment: req.body.isMonthlyPayment
     };
 
-    db.budgets.update(budget)
+    db.budgetItems.update(budget)
         .then((budgets) => {
             res.json(budgets);
         })
@@ -57,7 +61,7 @@ router.put('/:budgetId', (req, res) => {
 });
 
 router.delete('/:budgetId', (req, res) => {
-    db.budgets.deleteById(req.params.budgetId)
+    db.budgetItems.deleteById(req.params.budgetId)
         .then((budgets) => {
             res.json(budgets);
         })

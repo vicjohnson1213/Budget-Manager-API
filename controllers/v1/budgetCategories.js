@@ -2,12 +2,11 @@ var router = require('express').Router(),
     db = require('../../data/db');
 
 router.post('/', (req, res) => {
-    var expenseCategory = {
-        parentId: req.body.parentId,
+    var budgetCategory = {
         name: req.body.name
     };
 
-    db.expenseCategories.create(expenseCategory)
+    db.budgetCategories.create(budgetCategory)
         .then((categories) => {
             res.json(categories);
         })
@@ -17,7 +16,7 @@ router.post('/', (req, res) => {
 });
 
 router.get('/', (req, res) => {
-    db.expenseCategories.getAll()
+    db.budgetCategories.getAll()
         .then((categories) => {
             if (categories) {
                 res.json(categories);
@@ -28,8 +27,8 @@ router.get('/', (req, res) => {
         });
 });
 
-router.get('/:expenseCategoryId', (req, res) => {
-    db.expenseCategories.getById(req.params.expenseCategoryId)
+router.get('/:budgetCategoryId', (req, res) => {
+    db.budgetCategories.getById(req.params.budgetCategoryId)
         .then((category) => {
             if (categories) {
                 res.json(category);
@@ -42,14 +41,13 @@ router.get('/:expenseCategoryId', (req, res) => {
         });
 });
 
-router.put('/:expenseCategoryId', (req, res) => {
-    var expenseCategory = {
-        id: req.params.expenseCategoryId,
-        parentId: req.body.parentId,
+router.put('/:budgetCategoryId', (req, res) => {
+    var budgetCategory = {
+        id: req.params.budgetCategoryId,
         name: req.body.name
     };
 
-    db.expenseCategories.update(expenseCategory)
+    db.budgetCategories.update(budgetCategory)
         .then((categories) => {
             if (categories) {
                 res.json(categories);
@@ -62,8 +60,8 @@ router.put('/:expenseCategoryId', (req, res) => {
         });
 });
 
-router.delete('/:expenseCategoryId', (req, res) => {
-    db.expenseCategories.deleteById(req.params.expenseCategoryId)
+router.delete('/:budgetCategoryId', (req, res) => {
+    db.budgetCategories.deleteById(req.params.budgetCategoryId)
         .then((categories) => {
             res.json(categories);
         })

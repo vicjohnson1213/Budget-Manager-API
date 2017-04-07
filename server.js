@@ -40,6 +40,8 @@ app.use((req, res, next) => {
 
 app.use('/api', api);
 
+var httpServer = http.createServer(app);
 var httpsServer = https.createServer(sslConfig, app);
 
+httpServer.listen(3000);
 httpsServer.listen(3443);

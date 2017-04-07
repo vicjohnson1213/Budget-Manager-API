@@ -1,10 +1,10 @@
 var pool = require('./dbConnection').pool;
 
-function getById(expenseCategoryId) {
+function getById(budgetCategoryId) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spExpenseCategoryGetById(?);';
+        var query = 'CALL spBudgetCategoryGetById(?);';
 
-        var params = [expenseCategoryId];
+        var params = [budgetCategoryId];
 
         pool.query(query, params, (err, results) => {
             if (err) {
@@ -19,7 +19,7 @@ function getById(expenseCategoryId) {
 
 function getAll() {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spExpenseCategoryGetAll();';
+        var query = 'CALL spBudgetCategoryGetAll();';
 
         pool.query(query, (err, results) => {
             if (err) {
@@ -32,13 +32,13 @@ function getAll() {
     });
 }
 
-function create(expenseCategory) {
+function create(budgetCategory) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spExpenseCategoryCreate(?, ?);';
+        var query = 'CALL spBudgetCategoryCreate(?);';
+        console.log(budgetCategory.name)
 
         var params = [
-            expenseCategory.parentId,
-            expenseCategory.name,
+            budgetCategory.name,
         ];
 
         pool.query(query, params, (err, results) => {
@@ -52,14 +52,13 @@ function create(expenseCategory) {
     });
 }
 
-function update(expenseCategory) {
+function update(budgetCategory) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spExpenseCategoryUpdate(?, ?, ?);';
+        var query = 'CALL spBudgetCategoryUpdate(?, ?);';
 
         var params = [
-            expenseCategory.id,
-            expenseCategory.parentId,
-            expenseCategory.name
+            budgetCategory.id,
+            budgetCategory.name
         ];
 
         pool.query(query, params, (err, results) => {
@@ -73,11 +72,11 @@ function update(expenseCategory) {
     });
 }
 
-function deleteById(expenseCategoryId) {
+function deleteById(budgetCategoryId) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spExpenseCategoryDelete(?);';
+        var query = 'CALL spBudgetCategoryDelete(?);';
 
-        var params = [expenseCategoryId];
+        var params = [budgetCategoryId];
 
         pool.query(query, params, (err, results) => {
             if (err) {

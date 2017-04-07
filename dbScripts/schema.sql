@@ -1,66 +1,72 @@
+DROP SCHEMA IF EXISTS `BudgetManager`;
 CREATE SCHEMA `BudgetManager`;
 
 USE `BudgetManager`;
 
+DROP TABLE IF EXISTS `IncomeSource`;
 CREATE TABLE `IncomeSource`
 (
-	`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `name` NVARCHAR(50) NOT NULL,
     `annualAmount` INT NOT NULL
 );
 
+DROP TABLE IF EXISTS `TaxExemption`;
 CREATE TABLE `TaxExemption`
 (
-	`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `name` NVARCHAR(50) NOT NULL,
     `amount` INT NOT NULL
 );
 
+DROP TABLE IF EXISTS `TaxDeduction`;
 CREATE TABLE `TaxDeduction`
 (
-	`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `name` NVARCHAR(50) NOT NULL,
     `amount` INT NOT NULL
 );
 
+DROP TABLE IF EXISTS `TaxCredit`;
 CREATE TABLE `TaxCredit`
 (
-	`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `name` NVARCHAR(50) NOT NULL,
     `amount` INT NOT NULL
 );
 
-CREATE TABLE `ExpenseCategory`
+DROP TABLE IF EXISTS `BudgetCategory`;
+CREATE TABLE `BudgetCategory`
 (
-	`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `parentId` INT NULL DEFAULT NULL,
+    `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `name` NVARCHAR(50) NOT NULL
+);
+
+DROP TABLE IF EXISTS `BudgetItem`;
+CREATE TABLE `BudgetItem`
+(
+    `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `budgetCategoryId` INT NOT NULL,
     `name` NVARCHAR(50) NOT NULL,
-	CONSTRAINT `fkExpenseCategoryParentId`
-		FOREIGN KEY (`parentId`) REFERENCES `ExpenseCategory` (`id`)
+    `amount` INT NOT NULL,
+    `isMonthlyPayment` TINYINT NOT NULL,
+    CONSTRAINT `fkBudgetCategoryId`
+        FOREIGN KEY (`budgetCategoryId`) REFERENCES `BudgetCategory` (`id`)
         ON DELETE RESTRICT
         ON UPDATE CASCADE
 );
 
+DROP TABLE IF EXISTS `Transaction`;
 CREATE TABLE `Transaction`
 (
-	`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `date` DATE NOT NULL,
     `name` NVARCHAR(50) NOT NULL,
-	`categoryId` INT NOT NULL,
+    `budgetItemId` INT NOT NULL,
     `amount` INT NOT NULL,
-	CONSTRAINT `fkTransactionsCategoryId`
-		FOREIGN KEY (`categoryId`) REFERENCES `ExpenseCategory` (`id`)
+    CONSTRAINT `fkTransactionsBudgetItemId`
+        FOREIGN KEY (`budgetItemId`) REFERENCES `BudgetItem` (`id`)
         ON DELETE RESTRICT
         ON UPDATE CASCADE
 );
 
-CREATE TABLE `Budget`
-(
-	`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `categoryId` INT NOT NULL,
-    `amount` INT NOT NULL,
-	CONSTRAINT `fkBudgetCategoryId`
-		FOREIGN KEY (`categoryId`) REFERENCES `ExpenseCategory` (`id`)
-        ON DELETE RESTRICT
-        ON UPDATE CASCADE
-);

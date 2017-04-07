@@ -1,20 +1,6 @@
 var router = require('express').Router(),
-    db = require('../../data/db');
-
-router.post('/', (req, res) => {
-    var taxExemption = {
-        name: req.body.name,
-        amount: req.body.amount
-    };
-
-    db.taxExemptions.create(taxExemption)
-        .then((taxExemptions) => {
-            res.json(taxExemptions);
-        })
-        .catch((err) => {
-            res.sendStatus(500);
-        });
-});
+    db = require('../../data/db'),
+    dto = require('../../helpers/dto');
 
 router.get('/', (req, res) => {
     db.taxExemptions.getAll()
@@ -40,6 +26,22 @@ router.get('/:taxExemptionId', (req, res) => {
         });
 });
 
+router.post('/', (req, res) => {
+    var taxExemption = {
+        name: req.body.name,
+        amount: req.body.amount
+    };
+
+    db.taxExemptions.create(taxExemption)
+        .then(() => {
+            dto.buildFinances()
+                .then((finances) => res.json(finances));
+        })
+        .catch((err) => {
+            res.sendStatus(500);
+        });
+});
+
 router.put('/:taxExemptionId', (req, res) => {
     var taxExemption = {
         id: req.params.taxExemptionId,
@@ -48,8 +50,9 @@ router.put('/:taxExemptionId', (req, res) => {
     };
 
     db.taxExemptions.update(taxExemption)
-        .then((taxExemptions) => {
-            res.json(taxExemptions);
+        .then(() => {
+            dto.buildFinances()
+                .then((finances) => res.json(finances));
         })
         .catch((err) => {
             res.sendStatus(500);
@@ -58,8 +61,9 @@ router.put('/:taxExemptionId', (req, res) => {
 
 router.delete('/:taxExemptionId', (req, res) => {
     db.taxExemptions.deleteById(req.params.taxExemptionId)
-        .then((taxExemptions) => {
-            res.json(taxExemptions);
+        .then(() => {
+            dto.buildFinances()
+                .then((finances) => res.json(finances));
         })
         .catch((err) => {
             res.sendStatus(500);

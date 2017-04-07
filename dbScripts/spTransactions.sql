@@ -1,6 +1,6 @@
 DELIMITER ;;
 DROP PROCEDURE IF EXISTS `spTransactionGetMonth`;;
-CREATE PROCEDURE `spTransactionGetAll` (IN `searchDate` DATE)
+CREATE PROCEDURE `spTransactionGetMonth` (IN `searchDate` DATE)
 BEGIN
     SELECT * FROM `Transaction`
     WHERE YEAR(`date`) = YEAR(`searchDate`) AND MONTH(`date`) = MONTH(`searchDate`)
@@ -20,19 +20,19 @@ DELIMITER ;;
 DROP PROCEDURE IF EXISTS `spTransactionCreate`;;
 CREATE PROCEDURE `spTransactionCreate` (IN `date` DATE, IN `name` NVARCHAR(50), IN `categoryId` INT, IN `amount` INT)
 BEGIN
-    INSERT INTO `Transaction` (`date`, `name`, `categoryId`, `amount`) values (`date`, `name`, `categoryId`, `amount`);
+    INSERT INTO `Transaction` (`date`, `name`, `budgetItemId`, `amount`) values (`date`, `name`, `budgetItemId`, `amount`);
     SELECT * FROM `Transaction` ORDER BY `date` ASC;
 END;;
 DELIMITER ;
 
 DELIMITER ;;
 DROP PROCEDURE IF EXISTS `spTransactionUpdate`;;
-CREATE PROCEDURE `spTransactionUpdate` (IN `transactionId` INT, IN `date` DATE, IN `name` NVARCHAR(50), IN `categoryId` INT, IN `amount` INT)
+CREATE PROCEDURE `spTransactionUpdate` (IN `transactionId` INT, IN `date` DATE, IN `name` NVARCHAR(50), IN `budgetItemId` INT, IN `amount` INT)
 BEGIN
     UPDATE `Transaction` SET
         `date` = `date`,
         `name` = `name`,
-        `categoryId` = categoryId,
+        `budgetItemId` = budgetItemId,
         `amount` = amount
     WHERE `id` = transactionId;
     SELECT * FROM `Transaction` ORDER BY `date` ASC;

@@ -3,7 +3,7 @@ module.exports = {
     taxExemptions: require('./taxExemptions'),
     taxDeductions: require('./taxDeductions'),
     taxCredits: require('./taxCredits'),
-    expenseCategories: require('./expenseCategories'),
     transactions: require('./transactions'),
-    budgets: require('./budgets')
+    budgetCategories: require('./budgetCategories'),
+    budgetItems: require('./budgetItems')
 };

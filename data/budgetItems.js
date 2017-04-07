@@ -1,10 +1,18 @@
 var pool = require('./dbConnection').pool;
 
-function getById(budgetId) {
-    return new Promise((resolve, reject) => {
-        var query = 'CALL spBudgetGetById(?);';
+function fixBooleans(items) {
+    items.forEach((item) => {
+        item.isMonthlyPayment = item.isMonthlyPayment === 1;
+    });
 
-        var params = [budgetId];
+    return items;
+}
+
+function getById(budgetItemId) {
+    return new Promise((resolve, reject) => {
+        var query = 'CALL spBudgetItemGetById(?);';
+
+        var params = [budgetItemId];
 
         pool.query(query, params, (err, results) => {
             if (err) {
@@ -19,7 +27,7 @@ function getById(budgetId) {
 
 function getAll() {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spBudgetGetAll();';
+        var query = 'CALL spBudgetItemGetAll();';
 
         pool.query(query, (err, results) => {
             if (err) {
@@ -27,18 +35,20 @@ function getAll() {
                 return;
             }
 
-            resolve(results[0]);
+            resolve(fixBooleans(results[0]));
         });
     });
 }
 
 function create(budget) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spBudgetCreate(?, ?);';
+        var query = 'CALL spBudgetItemCreate(?, ?, ?, ?);';
 
         var params = [
-            budget.categoryId,
-            budget.amount
+            budget.budgetCategoryId,
+            budget.name,
+            budget.amount,
+            budget.isMonthlyPayment
         ];
 
         pool.query(query, params, (err, results) => {
@@ -47,19 +57,21 @@ function create(budget) {
                 return;
             }
 
-            resolve(results[0]);
+            resolve(fixBooleans(results[0]));
         });
     });
 }
 
 function update(budget) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spBudgetUpdate(?, ?, ?);';
+        var query = 'CALL spBudgetItemUpdate(?, ?, ?, ?, ?);';
 
         var params = [
             budget.id,
-            budget.categoryId,
-            budget.amount
+            budget.budgetCategoryId,
+            budget.name,
+            budget.amount,
+            budget.isMonthlyPayment
         ];
 
         pool.query(query, params, (err, results) => {
@@ -68,16 +80,16 @@ function update(budget) {
                 return;
             }
 
-            resolve(results[0]);
+            resolve(fixBooleans(results[0]));
         });
     });
 }
 
-function deleteById(budgetId) {
+function deleteById(budgetItemId) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spBudgetDelete(?);';
+        var query = 'CALL spBudgetItemDelete(?);';
 
-        var params = [budgetId];
+        var params = [budgetItemId];
 
         pool.query(query, params, (err, results) => {
             if (err) {
@@ -85,7 +97,7 @@ function deleteById(budgetId) {
                 return;
             }
 
-            resolve(results[0]);
+            resolve(fixBooleans(results[0]));
         });
     });
 }

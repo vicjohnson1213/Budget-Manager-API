@@ -61,7 +61,7 @@ function create(transaction) {
         var params = [
             transaction.date,
             transaction.name,
-            transaction.categoryId,
+            transaction.budgetItemId,
             transaction.amount
         ];
 
@@ -84,7 +84,7 @@ function update(transaction) {
             transaction.id,
             transaction.date,
             transaction.name,
-            transaction.categoryId,
+            transaction.budgetItemId,
             transaction.amount
         ];
 

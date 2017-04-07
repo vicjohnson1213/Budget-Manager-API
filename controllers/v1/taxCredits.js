@@ -1,20 +1,6 @@
 var router = require('express').Router(),
-    db = require('../../data/db');
-
-router.post('/', (req, res) => {
-    var taxCredit = {
-        name: req.body.name,
-        amount: req.body.amount
-    };
-
-    db.taxCredits.create(taxCredit)
-        .then((taxCredits) => {
-            res.json(taxCredits);
-        })
-        .catch((err) => {
-            res.sendStatus(500);
-        });
-});
+    db = require('../../data/db')
+    dto = require('../../helpers/dto');
 
 router.get('/', (req, res) => {
     db.taxCredits.getAll()
@@ -40,6 +26,22 @@ router.get('/:taxCreditId', (req, res) => {
         });
 });
 
+router.post('/', (req, res) => {
+    var taxCredit = {
+        name: req.body.name,
+        amount: req.body.amount
+    };
+
+    db.taxCredits.create(taxCredit)
+        .then(() => {
+            dto.buildFinances()
+                .then((finances) => res.json(finances));
+        })
+        .catch((err) => {
+            res.sendStatus(500);
+        });
+});
+
 router.put('/:taxCreditId', (req, res) => {
     var taxCredit = {
         id: req.params.taxCreditId,
@@ -48,8 +50,9 @@ router.put('/:taxCreditId', (req, res) => {
     };
 
     db.taxCredits.update(taxCredit)
-        .then((taxCredits) => {
-            res.json(taxCredits);
+        .then(() => {
+            dto.buildFinances()
+                .then((finances) => res.json(finances));
         })
         .catch((err) => {
             res.sendStatus(500);
@@ -58,8 +61,9 @@ router.put('/:taxCreditId', (req, res) => {
 
 router.delete('/:taxCreditId', (req, res) => {
     db.taxCredits.deleteById(req.params.taxCreditId)
-        .then((taxCredits) => {
-            res.json(taxCredits);
+        .then(() => {
+            dto.buildFinances()
+                .then((finances) => res.json(finances));
         })
         .catch((err) => {
             res.sendStatus(500);
