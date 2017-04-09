@@ -9,6 +9,25 @@ END;;
 DELIMITER ;
 
 DELIMITER ;;
+DROP PROCEDURE IF EXISTS `spTransactionGetMonthSummary`;;
+CREATE PROCEDURE `spTransactionGetMonth` (IN `searchDate` DATE)
+BEGIN
+    SELECT
+        t.id,
+        t.date,
+        t.`name`,
+        t.amount,
+        t.budgetItemId,
+        bi.name as budgetItemName
+    FROM `Transaction` t
+        INNER JOIN `BudgetItem` bi
+            ON t.budgetItemId = bi.id
+    WHERE YEAR(`searchDate`) AND MONTH(`date`) = MONTH(`searchDate`)
+    ORDER BY `date` ASC;
+END;;
+DELIMITER ;
+
+DELIMITER ;;
 DROP PROCEDURE IF EXISTS `spTransactionGetById`;;
 CREATE PROCEDURE `spTransactionGetById` (IN `transactionId` INT)
 BEGIN

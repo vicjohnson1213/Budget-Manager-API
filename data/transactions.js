@@ -54,6 +54,28 @@ function getMonth(year, month) {
     });
 }
 
+function getMonthSummary(year, month) {
+    return new Promise((resolve, reject) => {
+        var query = 'CALL spTransactionGetMonthSummary(?);';
+        var fullDate;
+
+        if (year && month) {
+            fullDate = year + '/' + month + '/' + 1;
+        }
+
+        var params = [fullDate];
+
+        pool.query(query, params, (err, results) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+
+            resolve(results[0]);
+        });
+    });
+}
+
 function create(transaction) {
     return new Promise((resolve, reject) => {
         var query = 'CALL spTransactionCreate(?, ?, ?, ?);';
@@ -120,6 +142,7 @@ module.exports = {
     getById: getById,
     getAll: getAll,
     getMonth: getMonth,
+    getMonthSummary: getMonthSummary,
     create: create,
     update: update,
     deleteById: deleteById

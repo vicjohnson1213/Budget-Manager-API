@@ -1,26 +1,13 @@
 var router = require('express').Router(),
-    db = require('../../data/db');
-
-router.post('/', (req, res) => {
-    var transaction = {
-        date: req.body.date,
-        name: req.body.name,
-        categoryId: req.body.categoryId,
-        amount: req.body.amount
-    };
-
-    db.transactions.create(transaction)
-        .then((transactions) => {
-            res.json(transactions);
-        })
-        .catch((err) => {
-            res.sendStatus(500);
-        });
-});
+    db = require('../../data/db'),
+    dto = require('../../helpers/dto');
 
 router.get('/', (req, res) => {
-    var year = req.query.year,
-        month = req.query.month;
+    var currentDate = new Date();
+
+    var year = req.query.year || currentDate.getFullYear(),
+        month = req.query.month || (currentDate.getMonth() + 1);
+
 
     db.transactions.getMonth(year, month)
         .then((transactions) => {
@@ -29,6 +16,16 @@ router.get('/', (req, res) => {
         .catch((err) => {
             res.sendStatus(500);
         });
+});
+
+router.get('/summary', (req, res) => {
+    var currentDate = new Date();
+
+    var year = req.query.year || currentDate.getFullYear(),
+        month = req.query.month || (currentDate.getMonth() + 1);
+
+    dto.buildTransactionSummary(year, month)
+        .then((summary) => res.json(summary));
 });
 
 router.get('/:transactionId', (req, res) => {
@@ -45,28 +42,65 @@ router.get('/:transactionId', (req, res) => {
         });
 });
 
-router.put('/:transactionId', (req, res) => {
+router.post('/', (req, res) => {
+    var currentDate = new Date();
+
+    var year = req.query.year || currentDate.getFullYear(),
+        month = req.query.month || (currentDate.getMonth() + 1);
+
     var transaction = {
-        id: req.params.transactionId,
         date: req.body.date,
         name: req.body.name,
         categoryId: req.body.categoryId,
         amount: req.body.amount
     };
 
-    db.transactions.update(transaction)
+    db.transactions.create(transaction)
         .then((transactions) => {
-            res.json(transactions);
+            dto.buildTransactionSummary(year, month)
+                .then((summary) => res.json(summary));
         })
         .catch((err) => {
             res.sendStatus(500);
         });
 });
 
+router.put('/:transactionId', (req, res) => {
+    var currentDate = new Date();
+
+    var year = req.query.year || currentDate.getFullYear(),
+        month = req.query.month || (currentDate.getMonth() + 1);
+
+    console.log(req.body);
+    var transaction = {
+        id: req.params.transactionId,
+        date: req.body.date,
+        name: req.body.name,
+        budgetItemId: req.body.budgetItemId,
+        amount: req.body.amount
+    };
+
+    db.transactions.update(transaction)
+        .then((transactions) => {
+            dto.buildTransactionSummary(year, month)
+                .then((summary) => res.json(summary));
+        })
+        .catch((err) => {
+            console.log(err);
+            res.sendStatus(500);
+        });
+});
+
 router.delete('/:transactionId', (req, res) => {
+    var currentDate = new Date();
+
+    var year = req.query.year || currentDate.getFullYear(),
+        month = req.query.month || (currentDate.getMonth() + 1);
+        
     db.transactions.deleteById(req.params.transactionId)
         .then((transactions) => {
-            res.json(transactions);
+            dto.buildTransactionSummary(year, month)
+                .then((summary) => res.json(summary));
         })
         .catch((err) => {
             res.sendStatus(500);

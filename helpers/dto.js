@@ -48,6 +48,20 @@ function buildFinances() {
     });
 }
 
+function buildTransactionSummary(year, month) {
+    var transactionPromise = db.transactions.getMonthSummary(year, month);
+
+    return new Promise((resolve, reject) => {
+        Promise.all([transactionPromise])
+            .then((results) => {
+                resolve(results[0]);
+            }).catch((err) => {
+                reject(err);
+            });
+    });
+}
+
 module.exports = {
-    buildFinances: buildFinances
+    buildFinances: buildFinances,
+    buildTransactionSummary: buildTransactionSummary
 };
