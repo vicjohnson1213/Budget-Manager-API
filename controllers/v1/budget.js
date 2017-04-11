@@ -10,15 +10,22 @@ function sendBudget(req, res) {
             var categories = results[0];
             var items = results[1];
 
-            var budget = [];
+            var budget = {
+                categories: []
+            };
 
             categories.forEach((category) => {
-                budget.push({
+                var theseItems = items.filter(item => item.budgetCategoryId === category.id);
+
+                budget.categories.push({
                     id: category.id,
                     name: category.name,
-                    items: items.filter(item => item.budgetCategoryId === category.id)
+                    total: theseItems.reduce((a, i) => { return a + i.amount; }, 0),
+                    items: theseItems
                 });
             });
+
+            budget.total = items.reduce((a, i) => { return a + i.amount; }, 0);
 
             res.json(budget);
         }).catch((err) => {
