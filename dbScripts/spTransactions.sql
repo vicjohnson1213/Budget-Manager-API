@@ -10,7 +10,7 @@ DELIMITER ;
 
 DELIMITER ;;
 DROP PROCEDURE IF EXISTS `spTransactionGetMonthSummary`;;
-CREATE PROCEDURE `spTransactionGetMonth` (IN `searchDate` DATE)
+CREATE PROCEDURE `spTransactionGetMonthSummary` (IN `searchDate` DATE)
 BEGIN
     SELECT
         t.id,
@@ -18,10 +18,14 @@ BEGIN
         t.`name`,
         t.amount,
         t.budgetItemId,
-        bi.name as budgetItemName
+        bi.name as budgetItemName,
+        bc.id as budgetCategoryId,
+        bc.name as budgetCategoryName
     FROM `Transaction` t
         INNER JOIN `BudgetItem` bi
             ON t.budgetItemId = bi.id
+            INNER JOIN `BudgetCategory` bc
+                ON bi.budgetCategoryId = bc.id
     WHERE YEAR(`searchDate`) AND MONTH(`date`) = MONTH(`searchDate`)
     ORDER BY `date` ASC;
 END;;
@@ -37,7 +41,7 @@ DELIMITER ;
 
 DELIMITER ;;
 DROP PROCEDURE IF EXISTS `spTransactionCreate`;;
-CREATE PROCEDURE `spTransactionCreate` (IN `date` DATE, IN `name` NVARCHAR(50), IN `categoryId` INT, IN `amount` INT)
+CREATE PROCEDURE `spTransactionCreate` (IN `date` DATE, IN `name` NVARCHAR(50), IN `budgetItemId` INT, IN `amount` DECIMAL(13,2))
 BEGIN
     INSERT INTO `Transaction` (`date`, `name`, `budgetItemId`, `amount`) values (`date`, `name`, `budgetItemId`, `amount`);
     SELECT * FROM `Transaction` ORDER BY `date` ASC;
@@ -46,7 +50,7 @@ DELIMITER ;
 
 DELIMITER ;;
 DROP PROCEDURE IF EXISTS `spTransactionUpdate`;;
-CREATE PROCEDURE `spTransactionUpdate` (IN `transactionId` INT, IN `date` DATE, IN `name` NVARCHAR(50), IN `budgetItemId` INT, IN `amount` INT)
+CREATE PROCEDURE `spTransactionUpdate` (IN `transactionId` INT, IN `date` DATE, IN `name` NVARCHAR(50), IN `budgetItemId` INT, IN `amount` DECIMAL(13,2))
 BEGIN
     UPDATE `Transaction` SET
         `date` = `date`,

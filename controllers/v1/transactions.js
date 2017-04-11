@@ -51,7 +51,7 @@ router.post('/', (req, res) => {
     var transaction = {
         date: req.body.date,
         name: req.body.name,
-        categoryId: req.body.categoryId,
+        budgetItemId: req.body.budgetItemId,
         amount: req.body.amount
     };
 
@@ -71,7 +71,6 @@ router.put('/:transactionId', (req, res) => {
     var year = req.query.year || currentDate.getFullYear(),
         month = req.query.month || (currentDate.getMonth() + 1);
 
-    console.log(req.body);
     var transaction = {
         id: req.params.transactionId,
         date: req.body.date,
@@ -96,7 +95,7 @@ router.delete('/:transactionId', (req, res) => {
 
     var year = req.query.year || currentDate.getFullYear(),
         month = req.query.month || (currentDate.getMonth() + 1);
-        
+
     db.transactions.deleteById(req.params.transactionId)
         .then((transactions) => {
             dto.buildTransactionSummary(year, month)

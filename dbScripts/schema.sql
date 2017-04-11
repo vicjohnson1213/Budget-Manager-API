@@ -63,7 +63,7 @@ CREATE TABLE `Transaction`
     `date` DATE NOT NULL,
     `name` NVARCHAR(50) NOT NULL,
     `budgetItemId` INT NOT NULL,
-    `amount` INT NOT NULL,
+    `amount` DECIMAL(13,2) NOT NULL,
     CONSTRAINT `fkTransactionsBudgetItemId`
         FOREIGN KEY (`budgetItemId`) REFERENCES `BudgetItem` (`id`)
         ON DELETE RESTRICT
