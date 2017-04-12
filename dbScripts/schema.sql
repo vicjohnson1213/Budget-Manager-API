@@ -52,7 +52,7 @@ CREATE TABLE `BudgetItem`
     `isMonthlyPayment` TINYINT NOT NULL,
     CONSTRAINT `fkBudgetCategoryId`
         FOREIGN KEY (`budgetCategoryId`) REFERENCES `BudgetCategory` (`id`)
-        ON DELETE RESTRICT
+        ON DELETE CASCADE
         ON UPDATE CASCADE
 );
 
