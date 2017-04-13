@@ -48,6 +48,40 @@ function buildFinances() {
     });
 }
 
+function buildBudget() {
+    var categoriesPromise = db.budgetCategories.getAll();
+    var itemsPromise = db.budgetItems.getAll();
+
+    return new Promise((resolve, reject) => {
+        Promise.all([categoriesPromise, itemsPromise])
+            .then((results) => {
+                var categories = results[0];
+                var items = results[1];
+
+                var budget = {
+                    categories: []
+                };
+
+                categories.forEach((category) => {
+                    var theseItems = items.filter(item => item.budgetCategoryId === category.id);
+
+                    budget.categories.push({
+                        id: category.id,
+                        name: category.name,
+                        total: theseItems.reduce((a, i) => { return a + i.amount; }, 0),
+                        items: theseItems
+                    });
+                });
+
+                budget.total = items.reduce((a, i) => { return a + i.amount; }, 0);
+
+                resolve(budget);
+            }).catch((err) => {
+                reject(err);
+            });
+    });
+}
+
 function buildTransactionSummary(year, month) {
     var transactionPromise = db.transactions.getMonthSummary(year, month);
 
@@ -62,6 +96,7 @@ function buildTransactionSummary(year, month) {
 }
 
 module.exports = {
+    buildBudget: buildBudget,
     buildFinances: buildFinances,
     buildTransactionSummary: buildTransactionSummary
 };

@@ -1,39 +1,11 @@
 var router = require('express').Router(),
-    db = require('../../data/db');
+    db = require('../../data/db'),
+    dto = require('../../helpers/dto');
 
-function sendBudget(req, res) {
-    var categoriesPromise = db.budgetCategories.getAll();
-    var itemsPromise = db.budgetItems.getAll();
-
-    Promise.all([categoriesPromise, itemsPromise])
-        .then((results) => {
-            var categories = results[0];
-            var items = results[1];
-
-            var budget = {
-                categories: []
-            };
-
-            categories.forEach((category) => {
-                var theseItems = items.filter(item => item.budgetCategoryId === category.id);
-
-                budget.categories.push({
-                    id: category.id,
-                    name: category.name,
-                    total: theseItems.reduce((a, i) => { return a + i.amount; }, 0),
-                    items: theseItems
-                });
-            });
-
-            budget.total = items.reduce((a, i) => { return a + i.amount; }, 0);
-
-            res.json(budget);
-        }).catch((err) => {
-            res.sendStatus(500);
-        });
-}
-
-router.get('/', sendBudget);
+router.get('/', (req, res) => {
+    dto.buildBudget()
+        .then(budget => { res.json(budget); });
+});
 
 router.post('/categories', (req, res) => {
     var budgetCategory = {
@@ -42,7 +14,8 @@ router.post('/categories', (req, res) => {
 
     db.budgetCategories.create(budgetCategory)
         .then(() => {
-            sendBudget(req, res);
+            dto.buildBudget()
+                .then(budget => { res.json(budget); });
         })
         .catch((err) => {
             res.sendStatus(500);
@@ -57,7 +30,8 @@ router.put('/categories/:categoryId', (req, res) => {
 
     db.budgetCategories.update(budgetCategory)
         .then(() => {
-            sendBudget(req, res);
+            dto.buildBudget()
+                .then(budget => { res.json(budget); });
         })
         .catch((err) => {
             res.sendStatus(500);
@@ -67,7 +41,8 @@ router.put('/categories/:categoryId', (req, res) => {
 router.delete('/categories/:categoryId', (req, res) => {
     db.budgetCategories.deleteById(req.params.categoryId)
         .then(() => {
-            sendBudget(req, res);
+            dto.buildBudget()
+                .then(budget => { res.json(budget); });
         })
         .catch((err) => {
             console.log(err);
@@ -85,7 +60,8 @@ router.post('/items', (req, res) => {
 
     db.budgetItems.create(budgetItem)
         .then(() => {
-            sendBudget(req, res);
+            dto.buildBudget()
+                .then(budget => { res.json(budget); });
         })
         .catch((err) => {
             res.sendStatus(500);
@@ -103,7 +79,8 @@ router.put('/items/:itemId', (req, res) => {
 
     db.budgetItems.update(budgetItem)
         .then(() => {
-            sendBudget(req, res);
+            dto.buildBudget()
+                .then(budget => { res.json(budget); });
         })
         .catch((err) => {
             res.sendStatus(500);
@@ -113,7 +90,8 @@ router.put('/items/:itemId', (req, res) => {
 router.delete('/items/:itemId', (req, res) => {
     db.budgetItems.deleteById(req.params.itemId)
         .then(() => {
-            sendBudget(req, res);
+            dto.buildBudget()
+                .then(budget => { res.json(budget); });
         })
         .catch((err) => {
             res.sendStatus(500);
