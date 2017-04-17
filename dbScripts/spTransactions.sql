@@ -4,7 +4,7 @@ CREATE PROCEDURE `spTransactionGetMonth` (IN `searchDate` DATE)
 BEGIN
     SELECT * FROM `Transaction`
     WHERE YEAR(`date`) = YEAR(`searchDate`) AND MONTH(`date`) = MONTH(`searchDate`)
-    ORDER BY `date` ASC;
+    ORDER BY `date` DESC;
 END;;
 DELIMITER ;
 
@@ -27,7 +27,7 @@ BEGIN
             INNER JOIN `BudgetCategory` bc
                 ON bi.budgetCategoryId = bc.id
     WHERE YEAR(`searchDate`) AND MONTH(`date`) = MONTH(`searchDate`)
-    ORDER BY `date` ASC;
+    ORDER BY `date` DESC;
 END;;
 DELIMITER ;
 
@@ -44,7 +44,7 @@ DROP PROCEDURE IF EXISTS `spTransactionCreate`;;
 CREATE PROCEDURE `spTransactionCreate` (IN `date` DATE, IN `name` NVARCHAR(50), IN `budgetItemId` INT, IN `amount` DECIMAL(13,2))
 BEGIN
     INSERT INTO `Transaction` (`date`, `name`, `budgetItemId`, `amount`) values (`date`, `name`, `budgetItemId`, `amount`);
-    SELECT * FROM `Transaction` ORDER BY `date` ASC;
+    SELECT * FROM `Transaction` ORDER BY `date` DESC;
 END;;
 DELIMITER ;
 
@@ -58,7 +58,7 @@ BEGIN
         `budgetItemId` = budgetItemId,
         `amount` = amount
     WHERE `id` = transactionId;
-    SELECT * FROM `Transaction` ORDER BY `date` ASC;
+    SELECT * FROM `Transaction` ORDER BY `date` DESC;
 END;;
 DELIMITER ;
 
@@ -67,6 +67,6 @@ DROP PROCEDURE IF EXISTS `spTransactionDelete`;;
 CREATE PROCEDURE `spTransactionDelete` (IN `transactionId` INT)
 BEGIN
     DELETE FROM `Transaction` WHERE `id` = transactionId;
-    SELECT * FROM `Transaction` ORDER BY `date` ASC;
+    SELECT * FROM `Transaction` ORDER BY `date` DESC;
 END;;
 DELIMITER ;
