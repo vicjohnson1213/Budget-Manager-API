@@ -42,13 +42,12 @@ function getAll() {
 
 function create(budget) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spBudgetItemCreate(?, ?, ?, ?);';
+        var query = 'CALL spBudgetItemCreate(?, ?, ?);';
 
         var params = [
             budget.budgetCategoryId,
             budget.name,
-            budget.amount,
-            budget.isMonthlyPayment
+            budget.amount
         ];
 
         pool.query(query, params, (err, results) => {
@@ -64,14 +63,13 @@ function create(budget) {
 
 function update(budget) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spBudgetItemUpdate(?, ?, ?, ?, ?);';
+        var query = 'CALL spBudgetItemUpdate(?, ?, ?, ?);';
 
         var params = [
             budget.id,
             budget.budgetCategoryId,
             budget.name,
-            budget.amount,
-            budget.isMonthlyPayment
+            budget.amount
         ];
 
         pool.query(query, params, (err, results) => {

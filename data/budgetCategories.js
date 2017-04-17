@@ -35,7 +35,6 @@ function getAll() {
 function create(budgetCategory) {
     return new Promise((resolve, reject) => {
         var query = 'CALL spBudgetCategoryCreate(?);';
-        console.log(budgetCategory.name)
 
         var params = [
             budgetCategory.name,

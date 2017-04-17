@@ -1,19 +1,21 @@
 var router = require('express').Router(),
-    db = require('../../data/db');
+    db = require('../../data/db'),
+    dto = require('../../helpers/dto');
 
 router.post('/', (req, res) => {
     var budget = {
         budgetCategoryId: req.body.budgetCategoryId,
         name: req.body.name,
-        amount: req.body.amount,
-        isMonthlyPayment: req.body.isMonthlyPayment
+        amount: req.body.amount
     };
 
     db.budgetItems.create(budget)
-        .then((budgets) => {
-            res.json(budgets);
+        .then(() => {
+            dto.buildBudget()
+                .then(budget => { res.json(budget); });
         })
         .catch((err) => {
+            console.log(err)
             res.sendStatus(500);
         });
 });
@@ -47,13 +49,13 @@ router.put('/:budgetId', (req, res) => {
         id: req.params.budgetId,
         budgetCategoryId: req.body.budgetCategoryId,
         name: req.body.name,
-        amount: req.body.amount,
-        isMonthlyPayment: req.body.isMonthlyPayment
+        amount: req.body.amount
     };
 
     db.budgetItems.update(budget)
-        .then((budgets) => {
-            res.json(budgets);
+        .then(() => {
+            dto.buildBudget()
+                .then(budget => { res.json(budget); });
         })
         .catch((err) => {
             res.sendStatus(500);
@@ -62,8 +64,9 @@ router.put('/:budgetId', (req, res) => {
 
 router.delete('/:budgetId', (req, res) => {
     db.budgetItems.deleteById(req.params.budgetId)
-        .then((budgets) => {
-            res.json(budgets);
+        .then(() => {
+            dto.buildBudget()
+                .then(budget => { res.json(budget); });
         })
         .catch((err) => {
             res.sendStatus(500);

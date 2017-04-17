@@ -8,22 +8,6 @@ router.get('/', (req, res) => {
     var year = req.query.year || currentDate.getFullYear(),
         month = req.query.month || (currentDate.getMonth() + 1);
 
-
-    db.transactions.getMonth(year, month)
-        .then((transactions) => {
-            res.json(transactions);
-        })
-        .catch((err) => {
-            res.sendStatus(500);
-        });
-});
-
-router.get('/summary', (req, res) => {
-    var currentDate = new Date();
-
-    var year = req.query.year || currentDate.getFullYear(),
-        month = req.query.month || (currentDate.getMonth() + 1);
-
     dto.buildTransactionSummary(year, month)
         .then((summary) => res.json(summary));
 });

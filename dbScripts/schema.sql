@@ -49,7 +49,6 @@ CREATE TABLE `BudgetItem`
     `budgetCategoryId` INT NOT NULL,
     `name` NVARCHAR(50) NOT NULL,
     `amount` INT NOT NULL,
-    `isMonthlyPayment` TINYINT NOT NULL,
     CONSTRAINT `fkBudgetCategoryId`
         FOREIGN KEY (`budgetCategoryId`) REFERENCES `BudgetCategory` (`id`)
         ON DELETE CASCADE

@@ -40,7 +40,6 @@ function buildFinances() {
                     estimatedTaxes: estimatedTaxes
                 };
 
-
                 resolve(finances);
             }).catch((err) => {
                 reject(err);
@@ -88,7 +87,14 @@ function buildTransactionSummary(year, month) {
     return new Promise((resolve, reject) => {
         Promise.all([transactionPromise])
             .then((results) => {
-                resolve(results[0]);
+                var transactions = results[0];
+
+                var summary = {
+                    total: transactions.reduce((a, t) => { return a + t.amount }, 0),
+                    transactions: transactions
+                };
+
+                resolve(summary);
             }).catch((err) => {
                 reject(err);
             });

@@ -1,5 +1,6 @@
 var router = require('express').Router(),
-    db = require('../../data/db');
+    db = require('../../data/db'),
+    dto = require('../../helpers/dto');
 
 router.post('/', (req, res) => {
     var budgetCategory = {
@@ -7,8 +8,9 @@ router.post('/', (req, res) => {
     };
 
     db.budgetCategories.create(budgetCategory)
-        .then((categories) => {
-            res.json(categories);
+        .then(() => {
+            dto.buildBudget()
+                .then(budget => { res.json(budget); });
         })
         .catch((err) => {
             res.sendStatus(500);
@@ -48,12 +50,9 @@ router.put('/:budgetCategoryId', (req, res) => {
     };
 
     db.budgetCategories.update(budgetCategory)
-        .then((categories) => {
-            if (categories) {
-                res.json(categories);
-            } else {
-                res.sendStatus(404);
-            }
+        .then(() => {
+            dto.buildBudget()
+                .then(budget => { res.json(budget); });
         })
         .catch((err) => {
             res.sendStatus(500);
@@ -62,8 +61,9 @@ router.put('/:budgetCategoryId', (req, res) => {
 
 router.delete('/:budgetCategoryId', (req, res) => {
     db.budgetCategories.deleteById(req.params.budgetCategoryId)
-        .then((categories) => {
-            res.json(categories);
+        .then(() => {
+            dto.buildBudget()
+                .then(budget => { res.json(budget); });
         })
         .catch((err) => {
             res.sendStatus(500);
