@@ -1,10 +1,10 @@
 var pool = require('./dbConnection').pool;
 
-function getById(taxCreditId) {
+function getById(userId, taxCreditId) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spTaxCreditGetById(?);';
+        var query = 'CALL spTaxCreditGetById(?, ?);';
 
-        var params = [taxCreditId];
+        var params = [userId, taxCreditId];
 
         pool.query(query, params, (err, results) => {
             if (err) {
@@ -17,11 +17,12 @@ function getById(taxCreditId) {
     });
 }
 
-function getAll() {
+function getAll(userId) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spTaxCreditGetAll();';
+        var query = 'CALL spTaxCreditGetAll(?);';
+        var params = [userId];
 
-        pool.query(query, (err, results) => {
+        pool.query(query, params, (err, results) => {
             if (err) {
                 reject(err);
                 return;
@@ -32,11 +33,12 @@ function getAll() {
     });
 }
 
-function create(taxCredit) {
+function create(userId, taxCredit) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spTaxCreditCreate(?, ?);';
+        var query = 'CALL spTaxCreditCreate(?, ?, ?);';
 
         var params = [
+            userId,
             taxCredit.name,
             taxCredit.amount
         ];
@@ -52,11 +54,12 @@ function create(taxCredit) {
     });
 }
 
-function update(taxCredit) {
+function update(userId, taxCredit) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spTaxCreditUpdate(?, ?, ?);';
+        var query = 'CALL spTaxCreditUpdate(?, ?, ?, ?);';
 
         var params = [
+            userId,
             taxCredit.id,
             taxCredit.name,
             taxCredit.amount
@@ -73,11 +76,11 @@ function update(taxCredit) {
     });
 }
 
-function deleteById(taxCreditId) {
+function deleteById(userId, taxCreditId) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spTaxCreditDelete(?);';
+        var query = 'CALL spTaxCreditDelete(?, ?);';
 
-        var params = [taxCreditId];
+        var params = [userId, taxCreditId];
 
         pool.query(query, params, (err, results) => {
             if (err) {

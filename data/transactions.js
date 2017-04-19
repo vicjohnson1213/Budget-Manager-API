@@ -1,10 +1,10 @@
 var pool = require('./dbConnection').pool;
 
-function getById(transactionId) {
+function getById(userId, transactionId) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spTransactionGetById(?);';
+        var query = 'CALL spTransactionGetById(?, ?);';
 
-        var params = [transactionId];
+        var params = [userId, transactionId];
 
         pool.query(query, params, (err, results) => {
             if (err) {
@@ -17,31 +17,10 @@ function getById(transactionId) {
     });
 }
 
-function getAll(year, month) {
+function getAll(userId) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spTransactionGetAll();';
-
-        pool.query(query, (err, results) => {
-            if (err) {
-                reject(err);
-                return;
-            }
-
-            resolve(results[0]);
-        });
-    });
-}
-
-function getMonth(year, month) {
-    return new Promise((resolve, reject) => {
-        var query = 'CALL spTransactionGetMonth(?);';
-        var fullDate;
-
-        if (year && month) {
-            fullDate = year + '/' + month + '/' + 1;
-        }
-
-        var params = [fullDate];
+        var query = 'CALL spTransactionGetAll(?);';
+        var params = [userId];
 
         pool.query(query, params, (err, results) => {
             if (err) {
@@ -54,16 +33,16 @@ function getMonth(year, month) {
     });
 }
 
-function getMonthSummary(year, month) {
+function getMonth(userId, year, month) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spTransactionGetMonthSummary(?);';
+        var query = 'CALL spTransactionGetMonth(?, ?);';
         var fullDate;
 
         if (year && month) {
             fullDate = year + '/' + month + '/' + 1;
         }
 
-        var params = [fullDate];
+        var params = [userId, fullDate];
 
         pool.query(query, params, (err, results) => {
             if (err) {
@@ -76,11 +55,34 @@ function getMonthSummary(year, month) {
     });
 }
 
-function create(transaction) {
+function getMonthSummary(userId, year, month) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spTransactionCreate(?, ?, ?, ?);';
+        var query = 'CALL spTransactionGetMonthSummary(?, ?);';
+        var fullDate;
 
+        if (year && month) {
+            fullDate = year + '/' + month + '/' + 1;
+        }
+
+        var params = [userId, fullDate];
+
+        pool.query(query, params, (err, results) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+
+            resolve(results[0]);
+        });
+    });
+}
+
+function create(userId, transaction) {
+    return new Promise((resolve, reject) => {
+        var query = 'CALL spTransactionCreate(?, ?, ?, ?, ?);';
+        
         var params = [
+            userId,
             transaction.date,
             transaction.name,
             transaction.budgetItemId,
@@ -98,11 +100,12 @@ function create(transaction) {
     });
 }
 
-function update(transaction) {
+function update(userId, transaction) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spTransactionUpdate(?, ?, ?, ?, ?);';
+        var query = 'CALL spTransactionUpdate(?, ?, ?, ?, ?, ?);';
 
         var params = [
+            userId,
             transaction.id,
             transaction.date,
             transaction.name,
@@ -121,11 +124,11 @@ function update(transaction) {
     });
 }
 
-function deleteById(transactionId) {
+function deleteById(userId, transactionId) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spTransactionDelete(?);';
+        var query = 'CALL spTransactionDelete(?, ?);';
 
-        var params = [transactionId];
+        var params = [userId, transactionId];
 
         pool.query(query, params, (err, results) => {
             if (err) {

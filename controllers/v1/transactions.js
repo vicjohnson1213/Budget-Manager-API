@@ -8,12 +8,12 @@ router.get('/', (req, res) => {
     var year = req.query.year || currentDate.getFullYear(),
         month = req.query.month || (currentDate.getMonth() + 1);
 
-    dto.buildTransactionSummary(year, month)
+    dto.buildTransactionSummary(req.user.id, year, month)
         .then((summary) => res.json(summary));
 });
 
 router.get('/:transactionId', (req, res) => {
-    db.transactions.getById(req.params.transactionId)
+    db.transactions.getById(req.user.id, req.params.transactionId)
         .then((transaction) => {
             if (transaction) {
                 res.json(transaction);
@@ -39,11 +39,11 @@ router.post('/', (req, res) => {
         amount: req.body.amount
     };
 
-    db.transactions.create(transaction)
+    db.transactions.create(req.user.id, transaction)
         .then((transactions) => {
-            dto.buildTransactionSummary(year, month)
-                .then((summary) => res.json(summary));
+            return dto.buildTransactionSummary(req.user.id, year, month);
         })
+        .then((summary) => res.json(summary))
         .catch((err) => {
             res.sendStatus(500);
         });
@@ -63,11 +63,11 @@ router.put('/:transactionId', (req, res) => {
         amount: req.body.amount
     };
 
-    db.transactions.update(transaction)
+    db.transactions.update(req.user.id, transaction)
         .then((transactions) => {
-            dto.buildTransactionSummary(year, month)
-                .then((summary) => res.json(summary));
+            return dto.buildTransactionSummary(req.user.id, year, month);
         })
+        .then((summary) => res.json(summary))
         .catch((err) => {
             console.log(err);
             res.sendStatus(500);
@@ -80,11 +80,11 @@ router.delete('/:transactionId', (req, res) => {
     var year = req.query.year || currentDate.getFullYear(),
         month = req.query.month || (currentDate.getMonth() + 1);
 
-    db.transactions.deleteById(req.params.transactionId)
+    db.transactions.deleteById(req.user.id, req.params.transactionId)
         .then((transactions) => {
-            dto.buildTransactionSummary(year, month)
-                .then((summary) => res.json(summary));
+            return dto.buildTransactionSummary(req.user.id, year, month);
         })
+        .then((summary) => res.json(summary))
         .catch((err) => {
             res.sendStatus(500);
         });

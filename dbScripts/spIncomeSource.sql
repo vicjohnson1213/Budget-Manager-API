@@ -1,45 +1,94 @@
 DELIMITER ;;
 DROP PROCEDURE IF EXISTS `spIncomeSourceGetAll`;;
-CREATE PROCEDURE `spIncomeSourceGetAll` ()
+CREATE PROCEDURE `spIncomeSourceGetAll`
+(
+    IN `userId` INT
+)
 BEGIN
-    SELECT * FROM `IncomeSource` ORDER BY `annualAmount` DESC;
+    SELECT * FROM `IncomeSource`
+        WHERE `userId` = userId
+        ORDER BY `name` ASC;
 END;;
 DELIMITER ;
 
 DELIMITER ;;
 DROP PROCEDURE IF EXISTS `spIncomeSourceGetById`;;
-CREATE PROCEDURE `spIncomeSourceGetById` (IN `incomeSourceId` INT)
+CREATE PROCEDURE `spIncomeSourceGetById`
+(
+    IN `userId` INT,
+    IN `incomeSourceId` INT
+)
 BEGIN
-    SELECT * FROM `IncomeSource` WHERE `id` = incomeSourceId;
+    SELECT * FROM `IncomeSource`
+        WHERE `userId` = userId AND
+            `id` = incomeSourceId;
 END;;
 DELIMITER ;
 
 DELIMITER ;;
 DROP PROCEDURE IF EXISTS `spIncomeSourceCreate`;;
-CREATE PROCEDURE `spIncomeSourceCreate` (IN `name` NVARCHAR(50), IN `annualAmount` INT)
+CREATE PROCEDURE `spIncomeSourceCreate`
+(
+    IN `userId` INT,
+    IN `name` NVARCHAR(50),
+    IN `annualAmount` INT
+)
 BEGIN
-    INSERT INTO `IncomeSource` (`name`, `annualAmount`) values (`name`, `annualAmount`);
-    SELECT * FROM `IncomeSource` ORDER BY `annualAmount` DESC;
+    INSERT INTO `IncomeSource`
+    (
+        `userId`,
+        `name`,
+        `annualAmount`
+    )
+    VALUES
+    (
+        `userId`,
+        `name`,
+        `annualAmount`
+    );
+
+    SELECT * FROM `IncomeSource`
+        WHERE `userId` = userId
+        ORDER BY `name` ASC;
 END;;
 DELIMITER ;
 
 DELIMITER ;;
 DROP PROCEDURE IF EXISTS `spIncomeSourceUpdate`;;
-CREATE PROCEDURE `spIncomeSourceUpdate` (IN `incomeSourceId` INT, IN `name` NVARCHAR(50), IN `annualAmount` INT)
+CREATE PROCEDURE `spIncomeSourceUpdate`
+(
+    IN `userId` INT,
+    IN `incomeSourceId` INT,
+    IN `name` NVARCHAR(50),
+    IN `annualAmount` INT
+)
 BEGIN
     UPDATE `IncomeSource` SET
         `name` = `name`,
         `annualAmount` = annualAmount
-    WHERE `id` = incomeSourceId;
-    SELECT * FROM `IncomeSource` ORDER BY `annualAmount` DESC;
+    WHERE `userId` = userId AND
+        `id` = incomeSourceId;
+
+    SELECT * FROM `IncomeSource`
+        WHERE `userId` = userId
+        ORDER BY `name` ASC;
 END;;
 DELIMITER ;
 
 DELIMITER ;;
 DROP PROCEDURE IF EXISTS `spIncomeSourceDelete`;;
-CREATE PROCEDURE `spIncomeSourceDelete` (IN `incomeSourceId` INT)
+CREATE PROCEDURE `spIncomeSourceDelete`
+(
+    IN `userId` INT,
+    IN `incomeSourceId` INT
+)
 BEGIN
-    DELETE FROM `IncomeSource` WHERE `id` = incomeSourceId;
-    SELECT * FROM `IncomeSource` ORDER BY `annualAmount` DESC;
+    DELETE FROM `IncomeSource`
+        WHERE `userId` = userId AND
+            `id` = incomeSourceId;
+
+    SELECT * FROM `IncomeSource`
+        WHERE `userId` = userId
+        ORDER BY `name` ASC;
 END;;
 DELIMITER ;

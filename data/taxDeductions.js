@@ -1,10 +1,10 @@
 var pool = require('./dbConnection').pool;
 
-function getById(taxDeductionId) {
+function getById(userId, taxDeductionId) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spTaxDeductionGetById(?);';
+        var query = 'CALL spTaxDeductionGetById(?, ?);';
 
-        var params = [taxDeductionId];
+        var params = [userId, taxDeductionId];
 
         pool.query(query, params, (err, results) => {
             if (err) {
@@ -17,11 +17,12 @@ function getById(taxDeductionId) {
     });
 }
 
-function getAll() {
+function getAll(userId) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spTaxDeductionGetAll();';
+        var query = 'CALL spTaxDeductionGetAll(?);';
+        var params = [userId]
 
-        pool.query(query, (err, results) => {
+        pool.query(query, params, (err, results) => {
             if (err) {
                 reject(err);
                 return;
@@ -32,11 +33,12 @@ function getAll() {
     });
 }
 
-function create(taxDeduction) {
+function create(userId, taxDeduction) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spTaxDeductionCreate(?, ?);';
+        var query = 'CALL spTaxDeductionCreate(?, ?, ?);';
 
         var params = [
+            userId,
             taxDeduction.name,
             taxDeduction.amount
         ];
@@ -52,11 +54,12 @@ function create(taxDeduction) {
     });
 }
 
-function update(taxDeduction) {
+function update(userId, taxDeduction) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spTaxDeductionUpdate(?, ?, ?);';
+        var query = 'CALL spTaxDeductionUpdate(?, ?, ?, ?);';
 
         var params = [
+            userId,
             taxDeduction.id,
             taxDeduction.name,
             taxDeduction.amount
@@ -73,11 +76,11 @@ function update(taxDeduction) {
     });
 }
 
-function deleteById(taxDeductionId) {
+function deleteById(userId, taxDeductionId) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spTaxDeductionDelete(?);';
+        var query = 'CALL spTaxDeductionDelete(?, ?);';
 
-        var params = [taxDeductionId];
+        var params = [userId, taxDeductionId];
 
         pool.query(query, params, (err, results) => {
             if (err) {

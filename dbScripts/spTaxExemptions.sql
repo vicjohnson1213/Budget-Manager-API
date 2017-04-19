@@ -1,45 +1,94 @@
 DELIMITER ;;
 DROP PROCEDURE IF EXISTS `spTaxExemptionGetAll`;;
-CREATE PROCEDURE `spTaxExemptionGetAll` ()
+CREATE PROCEDURE `spTaxExemptionGetAll`
+(
+    IN `userId` INT
+)
 BEGIN
-    SELECT * FROM `TaxExemption` ORDER BY `name` ASC;
+    SELECT * FROM `TaxExemption`
+        WHERE `userId` = userId
+        ORDER BY `name` ASC;
 END;;
 DELIMITER ;
 
 DELIMITER ;;
 DROP PROCEDURE IF EXISTS `spTaxExemptionGetById`;;
-CREATE PROCEDURE `spTaxExemptionGetById` (IN `taxExemptionId` INT)
+CREATE PROCEDURE `spTaxExemptionGetById`
+(
+    IN `userId` INT,
+    IN `taxExemptionId` INT
+)
 BEGIN
-    SELECT * FROM `TaxExemption` WHERE `id` = taxExemptionId;
+    SELECT * FROM `TaxExemption`
+        WHERE `userId` = userId AND
+            `id` = taxExemptionId;
 END;;
 DELIMITER ;
 
 DELIMITER ;;
 DROP PROCEDURE IF EXISTS `spTaxExemptionCreate`;;
-CREATE PROCEDURE `spTaxExemptionCreate` (IN `name` NVARCHAR(50), IN `amount` INT)
+CREATE PROCEDURE `spTaxExemptionCreate`
+(
+    IN `userId` INT,
+    IN `name` NVARCHAR(50),
+    IN `amount` INT
+)
 BEGIN
-    INSERT INTO `TaxExemption` (`name`, `amount`) values (`name`, `amount`);
-    SELECT * FROM `TaxExemption` ORDER BY `name` ASC;
+    INSERT INTO `TaxExemption`
+    (
+        `userId`,
+        `name`,
+        `amount`
+    )
+    VALUES
+    (
+        `userId`,
+        `name`,
+        `amount`
+    );
+
+    SELECT * FROM `TaxExemption`
+        WHERE `userId` = userId
+        ORDER BY `name` ASC;
 END;;
 DELIMITER ;
 
 DELIMITER ;;
 DROP PROCEDURE IF EXISTS `spTaxExemptionUpdate`;;
-CREATE PROCEDURE `spTaxExemptionUpdate` (IN `taxExemptionId` INT, IN `name` NVARCHAR(50), IN `amount` INT)
+CREATE PROCEDURE `spTaxExemptionUpdate`
+(
+    IN `userId` INT,
+    IN `taxExemptionId` INT,
+    IN `name` NVARCHAR(50),
+    IN `amount` INT
+)
 BEGIN
     UPDATE `TaxExemption` SET
         `name` = `name`,
         `amount` = amount
-    WHERE `id` = taxExemptionId;
-    SELECT * FROM `TaxExemption` ORDER BY `name` ASC;
+    WHERE `userId` = userId AND
+        `id` = taxExemptionId;
+
+    SELECT * FROM `TaxExemption`
+        WHERE `userId` = userId
+        ORDER BY `name` ASC;
 END;;
 DELIMITER ;
 
 DELIMITER ;;
 DROP PROCEDURE IF EXISTS `spTaxExemptionDelete`;;
-CREATE PROCEDURE `spTaxExemptionDelete` (IN `taxExemptionId` INT)
+CREATE PROCEDURE `spTaxExemptionDelete`
+(
+    IN `userId` INT,
+    IN `taxExemptionId` INT
+)
 BEGIN
-    DELETE FROM `TaxExemption` WHERE `id` = taxExemptionId;
-    SELECT * FROM `TaxExemption` ORDER BY `name` ASC;
+    DELETE FROM `TaxExemption`
+        WHERE `userId` = userId AND
+            `id` = taxExemptionId;
+
+    SELECT * FROM `TaxExemption`
+        WHERE `userId` = userId
+        ORDER BY `name` ASC;
 END;;
 DELIMITER ;

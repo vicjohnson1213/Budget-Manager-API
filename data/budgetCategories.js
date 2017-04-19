@@ -1,10 +1,10 @@
 var pool = require('./dbConnection').pool;
 
-function getById(budgetCategoryId) {
+function getById(userId, budgetCategoryId) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spBudgetCategoryGetById(?);';
+        var query = 'CALL spBudgetCategoryGetById(?, ?);';
 
-        var params = [budgetCategoryId];
+        var params = [userId, budgetCategoryId];
 
         pool.query(query, params, (err, results) => {
             if (err) {
@@ -17,11 +17,12 @@ function getById(budgetCategoryId) {
     });
 }
 
-function getAll() {
+function getAll(userId) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spBudgetCategoryGetAll();';
+        var query = 'CALL spBudgetCategoryGetAll(?);';
+        var params = [userId];
 
-        pool.query(query, (err, results) => {
+        pool.query(query, params, (err, results) => {
             if (err) {
                 reject(err);
                 return;
@@ -32,11 +33,12 @@ function getAll() {
     });
 }
 
-function create(budgetCategory) {
+function create(userId, budgetCategory) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spBudgetCategoryCreate(?);';
+        var query = 'CALL spBudgetCategoryCreate(?, ?);';
 
         var params = [
+            userId,
             budgetCategory.name,
         ];
 
@@ -51,11 +53,12 @@ function create(budgetCategory) {
     });
 }
 
-function update(budgetCategory) {
+function update(userId, budgetCategory) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spBudgetCategoryUpdate(?, ?);';
+        var query = 'CALL spBudgetCategoryUpdate(?, ?, ?);';
 
         var params = [
+            userId,
             budgetCategory.id,
             budgetCategory.name
         ];
@@ -71,11 +74,11 @@ function update(budgetCategory) {
     });
 }
 
-function deleteById(budgetCategoryId) {
+function deleteById(userId, budgetCategoryId) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spBudgetCategoryDelete(?);';
+        var query = 'CALL spBudgetCategoryDelete(?, ?);';
 
-        var params = [budgetCategoryId];
+        var params = [userId, budgetCategoryId];
 
         pool.query(query, params, (err, results) => {
             if (err) {

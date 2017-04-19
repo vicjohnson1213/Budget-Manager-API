@@ -1,11 +1,11 @@
 var consts = require('../consts'),
     db = require('../data/db')
 
-function buildFinances() {
-    var incomePromise = db.incomeSources.getAll();
-    var deductionsPromise = db.taxDeductions.getAll();
-    var exemptionsPromise = db.taxExemptions.getAll();
-    var creditsPromise = db.taxCredits.getAll();
+function buildFinances(userId) {
+    var incomePromise = db.incomeSources.getAll(userId);
+    var deductionsPromise = db.taxDeductions.getAll(userId);
+    var exemptionsPromise = db.taxExemptions.getAll(userId);
+    var creditsPromise = db.taxCredits.getAll(userId);
 
     return new Promise((resolve, reject) => {
         Promise.all([incomePromise, deductionsPromise, exemptionsPromise, creditsPromise])
@@ -47,9 +47,9 @@ function buildFinances() {
     });
 }
 
-function buildBudget() {
-    var categoriesPromise = db.budgetCategories.getAll();
-    var itemsPromise = db.budgetItems.getAll();
+function buildBudget(userId) {
+    var categoriesPromise = db.budgetCategories.getAll(userId);
+    var itemsPromise = db.budgetItems.getAll(userId);
 
     return new Promise((resolve, reject) => {
         Promise.all([categoriesPromise, itemsPromise])
@@ -81,8 +81,8 @@ function buildBudget() {
     });
 }
 
-function buildTransactionSummary(year, month) {
-    var transactionPromise = db.transactions.getMonthSummary(year, month);
+function buildTransactionSummary(userId, year, month) {
+    var transactionPromise = db.transactions.getMonthSummary(userId, year, month);
 
     return new Promise((resolve, reject) => {
         Promise.all([transactionPromise])

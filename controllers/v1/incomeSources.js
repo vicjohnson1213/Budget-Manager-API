@@ -3,7 +3,7 @@ var router = require('express').Router(),
     dto = require('../../helpers/dto');
 
 router.get('/', (req, res) => {
-    db.incomeSources.getAll()
+    db.incomeSources.getAll(req.user.id)
         .then((sources) => {
             if (sources) {
                 res.json(sources);
@@ -15,7 +15,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/:incomeSourceId', (req, res) => {
-    db.incomeSources.getById(req.params.incomeSourceId)
+    db.incomeSources.getById(req.user.id, req.params.incomeSourceId)
         .then((sources) => {
             if (sources) {
                 res.json(sources);
@@ -34,11 +34,11 @@ router.post('/', (req, res) => {
         annualAmount: req.body.annualAmount
     };
 
-    db.incomeSources.create(incomeSource)
+    db.incomeSources.create(req.user.id, incomeSource)
         .then(() => {
-            dto.buildFinances()
-                .then((finances) => res.json(finances));
+            return dto.buildFinances(req.user.id)
         })
+        .then((finances) => res.json(finances))
         .catch((err) => {
             res.sendStatus(500);
         });
@@ -51,22 +51,22 @@ router.put('/:incomeSourceId', (req, res) => {
         annualAmount: req.body.annualAmount
     };
 
-    db.incomeSources.update(incomeSource)
+    db.incomeSources.update(req.user.id, incomeSource)
         .then(() => {
-            dto.buildFinances()
-                .then((finances) => res.json(finances));
+            return dto.buildFinances(req.user.id);
         })
+        .then((finances) => res.json(finances))
         .catch((err) => {
             res.sendStatus(500);
         });
 });
 
 router.delete('/:incomeSourceId', (req, res) => {
-    db.incomeSources.deleteById(req.params.incomeSourceId)
+    db.incomeSources.deleteById(req.user.id, req.params.incomeSourceId)
         .then(() => {
-            dto.buildFinances()
-                .then((finances) => res.json(finances));
+            return dto.buildFinances(req.user.id);
         })
+        .then((finances) => res.json(finances))
         .catch((err) => {
             res.sendStatus(500);
         });

@@ -1,8 +1,8 @@
 var pool = require('./dbConnection').pool;
 
-function getById(incomeSourceId) {
+function getById(userId, incomeSourceId) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spIncomeSourceGetById(?);';
+        var query = 'CALL spIncomeSourceGetById(?, ?);';
 
         var params = [incomeSourceId];
 
@@ -17,11 +17,12 @@ function getById(incomeSourceId) {
     });
 }
 
-function getAll() {
+function getAll(userId) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spIncomeSourceGetAll();';
+        var query = 'CALL spIncomeSourceGetAll(?);';
+        var params = [userId];
 
-        pool.query(query, (err, results) => {
+        pool.query(query, params, (err, results) => {
             if (err) {
                 reject(err);
                 return;
@@ -32,11 +33,12 @@ function getAll() {
     });
 }
 
-function create(incomeSource) {
+function create(userId, incomeSource) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spIncomeSourceCreate(?, ?);';
+        var query = 'CALL spIncomeSourceCreate(?, ?, ?);';
 
         var params = [
+            userId,
             incomeSource.name,
             incomeSource.annualAmount
         ];
@@ -52,11 +54,12 @@ function create(incomeSource) {
     });
 }
 
-function update(incomeSource) {
+function update(userId, incomeSource) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spIncomeSourceUpdate(?, ?, ?);';
+        var query = 'CALL spIncomeSourceUpdate(?, ?, ?, ?);';
 
         var params = [
+            userId,
             incomeSource.id,
             incomeSource.name,
             incomeSource.annualAmount
@@ -73,11 +76,11 @@ function update(incomeSource) {
     });
 }
 
-function deleteById(incomeSourceId) {
+function deleteById(userId, incomeSourceId) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spIncomeSourceDelete(?);';
+        var query = 'CALL spIncomeSourceDelete(?, ?);';
 
-        var params = [incomeSourceId];
+        var params = [userId, incomeSourceId];
 
         pool.query(query, params, (err, results) => {
             if (err) {

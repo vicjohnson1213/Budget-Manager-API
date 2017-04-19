@@ -1,10 +1,10 @@
 var pool = require('./dbConnection').pool;
 
-function getById(taxExemptionId) {
+function getById(userId, taxExemptionId) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spTaxExemptionGetById(?);';
+        var query = 'CALL spTaxExemptionGetById(?, ?);';
 
-        var params = [taxExemptionId];
+        var params = [userId, taxExemptionId];
 
         pool.query(query, params, (err, results) => {
             if (err) {
@@ -17,11 +17,12 @@ function getById(taxExemptionId) {
     });
 }
 
-function getAll() {
+function getAll(userId) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spTaxExemptionGetAll();';
+        var query = 'CALL spTaxExemptionGetAll(?);';
+        var params = [userId];
 
-        pool.query(query, (err, results) => {
+        pool.query(query, params, (err, results) => {
             if (err) {
                 reject(err);
                 return;
@@ -32,11 +33,12 @@ function getAll() {
     });
 }
 
-function create(taxExemption) {
+function create(userId, taxExemption) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spTaxExemptionCreate(?, ?);';
+        var query = 'CALL spTaxExemptionCreate(?, ?, ?);';
 
         var params = [
+            userId,
             taxExemption.name,
             taxExemption.amount
         ];
@@ -52,11 +54,12 @@ function create(taxExemption) {
     });
 }
 
-function update(taxExemption) {
+function update(userId, taxExemption) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spTaxExemptionUpdate(?, ?, ?);';
+        var query = 'CALL spTaxExemptionUpdate(?, ?, ?, ?);';
 
         var params = [
+            userId,
             taxExemption.id,
             taxExemption.name,
             taxExemption.amount
@@ -73,11 +76,11 @@ function update(taxExemption) {
     });
 }
 
-function deleteById(taxExemptionId) {
+function deleteById(userId, taxExemptionId) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spTaxExemptionDelete(?);';
+        var query = 'CALL spTaxExemptionDelete(?, ?);';
 
-        var params = [taxExemptionId];
+        var params = [userId, taxExemptionId];
 
         pool.query(query, params, (err, results) => {
             if (err) {

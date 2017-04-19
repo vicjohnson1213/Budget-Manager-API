@@ -3,7 +3,7 @@ var router = require('express').Router(),
     dto = require('../../helpers/dto');
 
 router.get('/', (req, res) => {
-    db.taxExemptions.getAll()
+    db.taxExemptions.getAll(req.user.id)
         .then((taxExemptions) => {
             res.json(taxExemptions);
         })
@@ -13,7 +13,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/:taxExemptionId', (req, res) => {
-    db.taxExemptions.getById(req.params.taxExemptionId)
+    db.taxExemptions.getById(req.user.id, req.params.taxExemptionId)
         .then((taxExemption) => {
             if (taxExemption) {
                 res.json(taxExemption);
@@ -32,11 +32,11 @@ router.post('/', (req, res) => {
         amount: req.body.amount
     };
 
-    db.taxExemptions.create(taxExemption)
+    db.taxExemptions.create(req.user.id, taxExemption)
         .then(() => {
-            dto.buildFinances()
-                .then((finances) => res.json(finances));
+            return dto.buildFinances(req.user.id);
         })
+        .then((finances) => res.json(finances))
         .catch((err) => {
             res.sendStatus(500);
         });
@@ -49,22 +49,22 @@ router.put('/:taxExemptionId', (req, res) => {
         amount: req.body.amount
     };
 
-    db.taxExemptions.update(taxExemption)
+    db.taxExemptions.update(req.user.id, taxExemption)
         .then(() => {
-            dto.buildFinances()
-                .then((finances) => res.json(finances));
+            return dto.buildFinances(req.user.id);
         })
+        .then((finances) => res.json(finances))
         .catch((err) => {
             res.sendStatus(500);
         });
 });
 
 router.delete('/:taxExemptionId', (req, res) => {
-    db.taxExemptions.deleteById(req.params.taxExemptionId)
+    db.taxExemptions.deleteById(req.user.id, req.params.taxExemptionId)
         .then(() => {
-            dto.buildFinances()
-                .then((finances) => res.json(finances));
+            return dto.buildFinances(req.user.id);
         })
+        .then((finances) => res.json(finances))
         .catch((err) => {
             res.sendStatus(500);
         });

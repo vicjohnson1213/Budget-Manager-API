@@ -8,11 +8,11 @@ function fixBooleans(items) {
     return items;
 }
 
-function getById(budgetItemId) {
+function getById(userId, budgetItemId) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spBudgetItemGetById(?);';
+        var query = 'CALL spBudgetItemGetById(?, ?);';
 
-        var params = [budgetItemId];
+        var params = [userId, budgetItemId];
 
         pool.query(query, params, (err, results) => {
             if (err) {
@@ -25,11 +25,12 @@ function getById(budgetItemId) {
     });
 }
 
-function getAll() {
+function getAll(userId) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spBudgetItemGetAll();';
+        var query = 'CALL spBudgetItemGetAll(?);';
+        var params = [userId];
 
-        pool.query(query, (err, results) => {
+        pool.query(query, params, (err, results) => {
             if (err) {
                 reject(err);
                 return;
@@ -40,11 +41,12 @@ function getAll() {
     });
 }
 
-function create(budget) {
+function create(userId, budget) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spBudgetItemCreate(?, ?, ?);';
+        var query = 'CALL spBudgetItemCreate(?, ?, ?, ?);';
 
         var params = [
+            userId,
             budget.budgetCategoryId,
             budget.name,
             budget.amount
@@ -61,11 +63,12 @@ function create(budget) {
     });
 }
 
-function update(budget) {
+function update(userId, budget) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spBudgetItemUpdate(?, ?, ?, ?);';
+        var query = 'CALL spBudgetItemUpdate(?, ?, ?, ?, ?);';
 
         var params = [
+            userId,
             budget.id,
             budget.budgetCategoryId,
             budget.name,
@@ -83,11 +86,11 @@ function update(budget) {
     });
 }
 
-function deleteById(budgetItemId) {
+function deleteById(userId, budgetItemId) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spBudgetItemDelete(?);';
+        var query = 'CALL spBudgetItemDelete(?, ?);';
 
-        var params = [budgetItemId];
+        var params = [userId, budgetItemId];
 
         pool.query(query, params, (err, results) => {
             if (err) {

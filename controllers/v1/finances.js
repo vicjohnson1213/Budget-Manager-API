@@ -2,7 +2,7 @@ var router = require('express').Router(),
     dto = require('../../helpers/dto');
 
 router.get('/', (req, res) => {
-    dto.buildFinances()
+    dto.buildFinances(req.user.id)
         .then((finances) => res.json(finances));
 });
 

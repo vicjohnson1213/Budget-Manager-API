@@ -2,9 +2,9 @@ var fs = require('fs'),
     http = require('http'),
     https = require('https'),
 
+    passport = require('passport'),
     express = require('express'),
     bodyParser = require('body-parser'),
-    bearerToken = require('express-bearer-token'),
 
     api = require('./controllers/versions'),
     db = require('./data/db'),
@@ -24,17 +24,7 @@ var port = process.env.PORT || 3000;
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.use(bearerToken());
-
-app.use((req, res, next) => {
-    var token = process.env.BUDGET_MANAGER_TOKEN || 'devToken';
-
-    if (req.token && req.token === token) {
-        return next();
-    }
-
-    res.sendStatus(401);
-});
+app.use(passport.initialize());
 
 app.use('/api', api);
 

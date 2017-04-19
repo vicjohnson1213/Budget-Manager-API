@@ -3,7 +3,7 @@ var router = require('express').Router(),
     dto = require('../../helpers/dto');
 
 router.get('/', (req, res) => {
-    dto.buildBudget()
+    dto.buildBudget(req.user.id)
         .then(budget => { res.json(budget); });
 });
 

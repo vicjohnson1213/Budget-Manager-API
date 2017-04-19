@@ -5,5 +5,6 @@ module.exports = {
     taxCredits: require('./taxCredits'),
     transactions: require('./transactions'),
     budgetCategories: require('./budgetCategories'),
-    budgetItems: require('./budgetItems')
+    budgetItems: require('./budgetItems'),
+    users: require('./users')
 };

@@ -3,7 +3,7 @@ var router = require('express').Router(),
     dto = require('../../helpers/dto');
 
 router.get('/', (req, res) => {
-    db.taxCredits.getAll()
+    db.taxCredits.getAll(req.user.id)
         .then((taxCredits) => {
             res.json(taxCredits);
         })
@@ -13,7 +13,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/:taxCreditId', (req, res) => {
-    db.taxCredits.getById(req.params.taxCreditId)
+    db.taxCredits.getById(req.user.id, req.params.taxCreditId)
         .then((taxCredit) => {
             if (taxCredit) {
                 res.json(taxCredit);
@@ -32,11 +32,11 @@ router.post('/', (req, res) => {
         amount: req.body.amount
     };
 
-    db.taxCredits.create(taxCredit)
+    db.taxCredits.create(req.user.id, taxCredit)
         .then(() => {
-            dto.buildFinances()
-                .then((finances) => res.json(finances));
+            return dto.buildFinances(req.user.id);
         })
+        .then((finances) => res.json(finances))
         .catch((err) => {
             res.sendStatus(500);
         });
@@ -49,22 +49,22 @@ router.put('/:taxCreditId', (req, res) => {
         amount: req.body.amount
     };
 
-    db.taxCredits.update(taxCredit)
+    db.taxCredits.update(req.user.id, taxCredit)
         .then(() => {
-            dto.buildFinances()
-                .then((finances) => res.json(finances));
+            return dto.buildFinances(req.user.id);
         })
+        .then((finances) => res.json(finances))
         .catch((err) => {
             res.sendStatus(500);
         });
 });
 
 router.delete('/:taxCreditId', (req, res) => {
-    db.taxCredits.deleteById(req.params.taxCreditId)
+    db.taxCredits.deleteById(req.user.id, req.params.taxCreditId)
         .then(() => {
-            dto.buildFinances()
-                .then((finances) => res.json(finances));
+            return dto.buildFinances(req.user.id);
         })
+        .then((finances) => res.json(finances))
         .catch((err) => {
             res.sendStatus(500);
         });
