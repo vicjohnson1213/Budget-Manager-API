@@ -285,7 +285,7 @@ CREATE PROCEDURE `spIncomeSourceDelete`
     IN `incomeSourceId` INT
 )
 BEGIN
-    DELETE is FROM `IncomeSource` ins
+    DELETE ins FROM `IncomeSource` ins
         WHERE ins.`userId` = userId AND
             ins.`id` = incomeSourceId;
 
