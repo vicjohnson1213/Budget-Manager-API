@@ -1,5 +1,5 @@
 module.exports = {
-	federalTaxBracket: require('./federalTaxBracket'),
+    federalTaxBracket: require('./federalTaxBracket'),
     incomeSources: require('./incomeSources'),
     taxExemptions: require('./taxExemptions'),
     taxDeductions: require('./taxDeductions'),

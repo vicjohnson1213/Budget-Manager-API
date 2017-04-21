@@ -28,8 +28,9 @@ function buildFinances(userId) {
                     federalTaxBracketPromise.then((bracketResults) => {
                         var rate = bracketResults[0].rate;
                         var base = bracketResults[0].base;
+                        var over = bracketResults[0].min;
 
-                        var amountRemoved = (taxableIncome - consts.taxRates.federal.over) * (rate/100);
+                        var amountRemoved = (taxableIncome - over) * (rate/100);
                         var federalTaxes = (base + amountRemoved) - totalCredits;
 
                         var ficaTax = consts.taxRates.fica.rate * totalIncome;

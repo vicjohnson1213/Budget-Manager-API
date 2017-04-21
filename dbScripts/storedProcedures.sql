@@ -822,7 +822,7 @@ CREATE PROCEDURE `spTaxBracketGetByIncome`
 )
 BEGIN
     SELECT * FROM `TaxBracket` tb
-        WHERE tb.`min` < income AND tb.`max` >= income;
+        WHERE tb.`min` < income AND (tb.`max` >= income OR tb.`max` IS NULL);
 END;;
 DELIMITER ;
 

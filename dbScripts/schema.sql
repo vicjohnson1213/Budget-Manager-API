@@ -113,22 +113,20 @@ CREATE TABLE `Transaction`
         ON UPDATE CASCADE
 );
 
-DROP TABLE IF EXISTS `TaxBracket`;
-CREATE TABLE `TaxBracket`
+DROP TABLE IF EXISTS `FederalTaxBracket`;
+CREATE TABLE `FederalTaxBracket`
 (
-    `min` INT NOT NULL,
-    `max` INT NOT NULL,
-    `rate` INT NOT NULL,
-    `base` INT NOT NULL,
-    CHECK (`min` < `max`)
-
+    `min` INT,
+    `max` INT,
+    `rate` INT,
+    `base` INT
 );
 
-INSERT INTO `TaxBracket` (`min`, `max`, `rate`, `base`) VALUES (0, 9325, 10, 0);
-INSERT INTO `TaxBracket` (`min`, `max`, `rate`, `base`) VALUES (9325, 37950, 15, 932);
-INSERT INTO `TaxBracket` (`min`, `max`, `rate`, `base`) VALUES (37950, 91900, 25, 5226);
-INSERT INTO `TaxBracket` (`min`, `max`, `rate`, `base`) VALUES (91900, 191650, 28, 18713);
-INSERT INTO `TaxBracket` (`min`, `max`, `rate`, `base`) VALUES (191650, 461700, 33, 46643);
-INSERT INTO `TaxBracket` (`min`, `max`, `rate`, `base`) VALUES (461700, 418400, 35, 120910);
-INSERT INTO `TaxBracket` (`min`, `max`, `rate`, `base`) VALUES (418400, -1, 40, 121505);
+INSERT INTO `FederalTaxBracket` (`min`, `max`, `rate`, `base`) VALUES (0, 9325, 10, 0);
+INSERT INTO `FederalTaxBracket` (`min`, `max`, `rate`, `base`) VALUES (9325, 37950, 15, 932);
+INSERT INTO `FederalTaxBracket` (`min`, `max`, `rate`, `base`) VALUES (37950, 91900, 25, 5226);
+INSERT INTO `FederalTaxBracket` (`min`, `max`, `rate`, `base`) VALUES (91900, 191650, 28, 18713);
+INSERT INTO `FederalTaxBracket` (`min`, `max`, `rate`, `base`) VALUES (191650, 461700, 33, 46643);
+INSERT INTO `FederalTaxBracket` (`min`, `max`, `rate`, `base`) VALUES (461700, 418400, 35, 120910);
+INSERT INTO `FederalTaxBracket` (`min`, `max`, `rate`, `base`) VALUES (418400, NULL, 40, 121505);
 

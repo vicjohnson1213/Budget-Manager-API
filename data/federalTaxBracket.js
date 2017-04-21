@@ -1,7 +1,6 @@
 var pool = require('./dbConnection').pool;
 
 function get(income) {
-	console.log("in fed tax bracket get");
     return new Promise((resolve, reject) => {
         var query = 'CALL spTaxBracketGetByIncome(?);';
         var params = [income];
