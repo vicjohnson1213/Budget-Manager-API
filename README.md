@@ -48,7 +48,7 @@
 - `PUT /items/:budgetId`
 - `DELETE /items/:budgetId`
 
-#### '/transactions'
+#### `/transactions`
 
 - `GET /`
 
@@ -56,3 +56,7 @@
 - `POST /`
 - `PUT /:transactionId`
 - `DELETE /:transactionId`
+
+#### `/users`
+
+- `POST /`
