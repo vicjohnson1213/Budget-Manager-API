@@ -129,3 +129,16 @@ INSERT INTO `FederalTaxBracket` (`min`, `max`, `rate`, `base`) VALUES (91900, 19
 INSERT INTO `FederalTaxBracket` (`min`, `max`, `rate`, `base`) VALUES (191650, 461700, 33, 46643);
 INSERT INTO `FederalTaxBracket` (`min`, `max`, `rate`, `base`) VALUES (461700, 418400, 35, 120910);
 INSERT INTO `FederalTaxBracket` (`min`, `max`, `rate`, `base`) VALUES (418400, NULL, 40, 121505);
+
+
+DROP TABLE IF EXISTS `RefreshToken`;
+CREATE TABLE `RefreshToken`
+(
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    userId INT NOT NULL,
+    token VARCHAR(80) UNIQUE NOT NULL,
+    CONSTRAINT `fkRefreshTokenUserId`
+        FOREIGN KEY (`userId`) REFERENCES `User` (`id`)
+            ON DELETE CASCADE
+            ON UPDATE CASCADE
+);

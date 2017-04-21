@@ -1,4 +1,5 @@
 module.exports = {
+    auth: require('./auth'),
     federalTaxBracket: require('./federalTaxBracket'),
     incomeSources: require('./incomeSources'),
     taxExemptions: require('./taxExemptions'),

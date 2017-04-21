@@ -20,7 +20,7 @@ function create(user) {
                 return;
             }
 
-            resolve(results[0]);
+            resolve(results[0][0]);
         });
     });
 }

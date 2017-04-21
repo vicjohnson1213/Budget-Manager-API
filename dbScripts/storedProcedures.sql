@@ -764,6 +764,9 @@ BEGIN
         passwordSalt,
         passwordHash
     );
+
+    SELECT u.id, u.emailAddress FROM `User` u
+        WHERE u.id = LAST_INSERT_ID();
 END;;
 DELIMITER ;
 
@@ -828,3 +831,57 @@ DELIMITER ;
 
 
 /* END TAX BRACKET */
+
+/* BEGIN REFRESH TOKEN */
+
+DELIMITER ;;
+DROP PROCEDURE IF EXISTS `spRefreshTokenCreate`;;
+CREATE PROCEDURE `spRefreshTokenCreate` 
+(
+    IN `userId` INT,
+    IN `token` VARCHAR(80)
+)
+BEGIN
+    INSERT INTO `RefreshToken`
+    (
+        `userId`,
+        `token`
+    )
+    VALUES
+    (
+        userId,
+        token
+    );
+END;;
+DELIMITER ;
+
+DELIMITER ;;
+DROP PROCEDURE IF EXISTS `spRefreshTokenGetUser`;;
+CREATE PROCEDURE `spRefreshTokenGetUser`
+(
+    IN `token` VARCHAR(80)
+)
+BEGIN
+    SELECT
+        u.id,
+        u.emailAddress
+    FROM `RefreshToken` r
+        INNER JOIN `User` u
+            ON r.userId = u.id
+        WHERE r.token = token;
+END;;
+DELIMITER ;
+
+DELIMITER ;;
+DROP PROCEDURE IF EXISTS `spRefreshTokenDelete`;;
+CREATE PROCEDURE `spRefreshTokenDelete`
+(
+    IN `token` VARCHAR(80)
+)
+BEGIN
+    DELETE rt FROM `RefreshToken` rt
+        WHERE rt.token = token;
+END;;
+DELIMITER ;
+
+/* END REFRESH TOKEN */
