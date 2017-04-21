@@ -1,19 +1,18 @@
-var passport = require('passport'),
-    BasicStrategy = require('passport-http').BasicStrategy,
-    db = require('../data/db');
+const passport = require('passport'),
+    jwt = require('jsonwebtoken'),  
+    config = require('../config/config');
 
-passport.use(new BasicStrategy(
-    function(emailAddress, password, callback) {
-        db.users.verifyPassword(emailAddress, password)
-            .then((user) => {
-                delete user.passwordSalt;
-                delete user.passwordHash;
-                
-                callback(null, user);
-            }).catch(() => {
-                callback('Invalid email address or password');
-            });
-    }
-));
+function generateToken(user) {  
+    return jwt.sign(user, config.secret, {
+        expiresIn: 10080 // in seconds
+    });
+}
 
-exports.verify = passport.authenticate('basic', { session : false });
+const requireAuth = passport.authenticate('jwt', { session: false });
+const requireLogin = passport.authenticate('local', { session: false });
+
+module.exports = {
+    generateToken: generateToken,
+    requireLogin: requireLogin,
+    requireAuth: requireAuth
+};

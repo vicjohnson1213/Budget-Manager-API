@@ -112,4 +112,3 @@ CREATE TABLE `Transaction`
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
-

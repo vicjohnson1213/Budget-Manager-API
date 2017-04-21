@@ -25,6 +25,30 @@ function create(user) {
     });
 }
 
+function get(emailAddress) {
+    return new Promise((resolve, reject) => {
+        var query = 'CALL spUserGetByEmail(?);';
+
+        var params = [
+            emailAddress
+        ];
+
+        pool.query(query, params, (err, results) => {
+            if (err || results[0].length === 0) {
+                reject(err);
+                return;
+            }
+
+            var user = results[0][0];
+
+            delete user.passwordSalt;
+            delete user.passwordHash;
+
+            resolve(user);
+        });
+    });
+}
+
 function verifyPassword(emailAddress, password) {
     return new Promise((resolve, reject) => {
         var query = 'CALL spUserGetByEmail(?);';
@@ -52,6 +76,7 @@ function verifyPassword(emailAddress, password) {
 }
 
 module.exports = {
+    get: get,
     create: create,
     verifyPassword: verifyPassword
 };
