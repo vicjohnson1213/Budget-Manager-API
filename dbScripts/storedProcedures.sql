@@ -810,3 +810,21 @@ DELIMITER ;
 
 
 /* END USERS */
+
+
+/* BEGIN TAX BRACKET */
+
+DELIMITER ;;
+DROP PROCEDURE IF EXISTS `spTaxBracketGetByIncome`;;
+CREATE PROCEDURE `spTaxBracketGetByIncome`
+(
+    IN `income` INT
+)
+BEGIN
+    SELECT * FROM `TaxBracket` tb
+        WHERE tb.`min` < income AND tb.`max` >= income;
+END;;
+DELIMITER ;
+
+
+/* END TAX BRACKET */
