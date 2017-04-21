@@ -815,8 +815,8 @@ DELIMITER ;
 /* BEGIN TAX BRACKET */
 
 DELIMITER ;;
-DROP PROCEDURE IF EXISTS `spTaxBracketGetByIncome`;;
-CREATE PROCEDURE `spTaxBracketGetByIncome`
+DROP PROCEDURE IF EXISTS `spFederalTaxBracketGetByIncome`;;
+CREATE PROCEDURE `spFederalTaxBracketGetByIncome`
 (
     IN `income` INT
 )
