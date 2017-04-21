@@ -821,7 +821,7 @@ CREATE PROCEDURE `spFederalTaxBracketGetByIncome`
     IN `income` INT
 )
 BEGIN
-    SELECT * FROM `TaxBracket` tb
+    SELECT * FROM `FederalTaxBracket` tb
         WHERE tb.`min` < income AND (tb.`max` >= income OR tb.`max` IS NULL);
 END;;
 DELIMITER ;
