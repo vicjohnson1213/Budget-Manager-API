@@ -8,58 +8,51 @@ function buildFinances(userId) {
     var creditsPromise = db.taxCredits.getAll(userId);
 
     return new Promise((resolve, reject) => {
-        incomePromise.then((incomeResults) => {
-            var income = incomeResults;
-            var totalIncome = income.reduce((acc, i) => {return acc + i.annualAmount; }, 0);
-
-            var federalTaxBracketPromise = db.federalTaxBracket.get(totalIncome);
-
-        
-            Promise.all([deductionsPromise, exemptionsPromise, creditsPromise, federalTaxBracketPromise])
+            Promise.all([incomePromise, deductionsPromise, exemptionsPromise, creditsPromise])
                 .then((results) => {
+                    var income = results[0]
+                    var deductions = results[1];
+                    var exemptions = results[2];
+                    var credits = results[3];
 
-                    console.log("promises resolved");
 
-                    var deductions = results[0];
-                    var exemptions = results[1];
-                    var credits = results[2];
-                    var bracket = results[3][0];
-                    var rate = bracket.rate;
-                    var base = bracket.base;
-
-                    console.log(bracket, rate, base);
+                    var totalIncome = income.reduce((acc, i) => {return acc + i.annualAmount; }, 0);
                     var totalDeductions = deductions.reduce((acc, i) => { return acc + i.amount; }, 0);
                     var totalExemptions = exemptions.reduce((acc, i) => { return acc + i.amount; }, 0);
                     var totalCredits = credits.reduce((acc, i) => { return acc + i.amount; }, 0);
 
                     var taxableIncome = totalIncome - totalDeductions - totalExemptions;
-                    var amountRemoved = (taxableIncome - consts.taxRates.federal.over) * (rate/100);
-                    var federalTaxes = (base + amountRemoved) - totalCredits;
 
-                    var ficaTax = consts.taxRates.fica.rate * totalIncome;
+                    var federalTaxBracketPromise = db.federalTaxBracket.get(taxableIncome);
 
-                    var estimatedTaxes = federalTaxes + ficaTax;
-                    var estimatedNetIncome = totalIncome - estimatedTaxes;
+                    federalTaxBracketPromise.then((bracketResults) => {
+                        var rate = bracketResults[0].rate;
+                        var base = bracketResults[0].base;
 
-                    var finances = {
-                        incomeSources: income,
-                        taxDeductions: deductions,
-                        taxExemptions: exemptions,
-                        taxCredits: credits,
-                        grossIncome: totalIncome,
-                        estimatedNetIncome: estimatedNetIncome,
-                        estimatedTaxes: estimatedTaxes
-                    };
+                        var amountRemoved = (taxableIncome - consts.taxRates.federal.over) * (rate/100);
+                        var federalTaxes = (base + amountRemoved) - totalCredits;
 
-                    resolve(finances);
+                        var ficaTax = consts.taxRates.fica.rate * totalIncome;
+
+                        var estimatedTaxes = federalTaxes + ficaTax;
+                        var estimatedNetIncome = totalIncome - estimatedTaxes;
+
+                        var finances = {
+                            incomeSources: income,
+                            taxDeductions: deductions,
+                            taxExemptions: exemptions,
+                            taxCredits: credits,
+                            grossIncome: totalIncome,
+                            estimatedNetIncome: estimatedNetIncome,
+                            estimatedTaxes: estimatedTaxes
+                        };
+                        resolve(finances);
+                    });
+
                 }).catch((err) => {
                     reject(err);
                 });
 
-        }).catch((err) => {
-            reject(err);
-        });
-        console.log("income promises resolved");
     });
 }
 
