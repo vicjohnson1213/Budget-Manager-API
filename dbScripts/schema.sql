@@ -131,14 +131,20 @@ INSERT INTO `FederalTaxBracket` (`min`, `max`, `rate`, `base`) VALUES (461700, 4
 INSERT INTO `FederalTaxBracket` (`min`, `max`, `rate`, `base`) VALUES (418400, NULL, 40, 121505);
 
 
-DROP TABLE IF EXISTS `RefreshToken`;
-CREATE TABLE `RefreshToken`
+DROP TABLE IF EXISTS `AccessToken`;
+CREATE TABLE `AccessToken`
 (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     userId INT NOT NULL,
     token VARCHAR(80) UNIQUE NOT NULL,
-    CONSTRAINT `fkRefreshTokenUserId`
+    lastAccessed DATETIME NOT NULL,
+    CONSTRAINT `fkAccessTokenUserId`
         FOREIGN KEY (`userId`) REFERENCES `User` (`id`)
             ON DELETE CASCADE
             ON UPDATE CASCADE
 );
+
+DROP EVENT IF EXISTS `pruneAccessTokens`;
+CREATE EVENT `pruneAccessTokens`
+    ON SCHEDULE EVERY 1 HOUR
+    DO DELETE a FROM `AccessToken` a WHERE a.`lastAccessed` < (NOW() - INTERVAL 14 DAY);

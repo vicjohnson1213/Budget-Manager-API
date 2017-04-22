@@ -2,22 +2,20 @@ var router = require('express').Router(),
     user = require('../../middleware/user'),
     auth = require('../../middleware/auth');
 
-router.post('/register', user.serialize, user.create, auth.generateAccessToken, auth.generateRefreshToken, (req, res) => {
+router.post('/register', user.serialize, user.create, auth.generateAccessToken, (req, res) => {
     res.json({
         user: req.user,
-        token: req.token
+        accessToken: req.token
     });
 });
 
-router.post('/login', auth.requireLogin, auth.generateAccessToken, auth.generateRefreshToken, (req, res) => {
-    res.json(req.token);
+router.post('/login', auth.requireLogin, auth.generateAccessToken, (req, res) => {
+    res.json({
+        accessToken: req.token
+    });
 });
 
-router.post('/token', auth.validateRefreshToken, auth.generateAccessToken, (req, res) => {
-    res.json(req.token);
-});
-
-router.post('/token/reject', auth.rejectRefreshToken, (req, res) => {
+router.post('/logout', auth.rejectAccessToken, (req, res) => {
     res.sendStatus(204);
 });
 

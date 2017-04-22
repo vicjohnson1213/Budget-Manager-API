@@ -832,56 +832,62 @@ DELIMITER ;
 
 /* END TAX BRACKET */
 
-/* BEGIN REFRESH TOKEN */
+/* BEGIN ACCESS TOKEN */
 
 DELIMITER ;;
-DROP PROCEDURE IF EXISTS `spRefreshTokenCreate`;;
-CREATE PROCEDURE `spRefreshTokenCreate` 
+DROP PROCEDURE IF EXISTS `spAccessTokenCreate`;;
+CREATE PROCEDURE `spAccessTokenCreate` 
 (
     IN `userId` INT,
     IN `token` VARCHAR(80)
 )
 BEGIN
-    INSERT INTO `RefreshToken`
+    INSERT INTO `AccessToken`
     (
         `userId`,
-        `token`
+        `token`,
+        `lastAccessed`
     )
     VALUES
     (
         userId,
-        token
+        token,
+        NOW()
     );
 END;;
 DELIMITER ;
 
 DELIMITER ;;
-DROP PROCEDURE IF EXISTS `spRefreshTokenGetUser`;;
-CREATE PROCEDURE `spRefreshTokenGetUser`
+DROP PROCEDURE IF EXISTS `spAccessTokenGetUser`;;
+CREATE PROCEDURE `spAccessTokenGetUser`
 (
     IN `token` VARCHAR(80)
 )
 BEGIN
+    UPDATE `AccessToken` a SET
+        a.lastAccessed = NOW()
+    WHERE a.token = token;
+
     SELECT
         u.id,
         u.emailAddress
-    FROM `RefreshToken` r
+    FROM `AccessToken` a
         INNER JOIN `User` u
-            ON r.userId = u.id
-        WHERE r.token = token;
+            ON a.userId = u.id
+        WHERE a.token = token;
 END;;
 DELIMITER ;
 
 DELIMITER ;;
-DROP PROCEDURE IF EXISTS `spRefreshTokenDelete`;;
-CREATE PROCEDURE `spRefreshTokenDelete`
+DROP PROCEDURE IF EXISTS `spAccessTokenDelete`;;
+CREATE PROCEDURE `spAccessTokenDelete`
 (
     IN `token` VARCHAR(80)
 )
 BEGIN
-    DELETE rt FROM `RefreshToken` rt
-        WHERE rt.token = token;
+    DELETE a FROM `AccessToken` a
+        WHERE a.token = token;
 END;;
 DELIMITER ;
 
-/* END REFRESH TOKEN */
+/* END ACCESS TOKEN */

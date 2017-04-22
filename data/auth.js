@@ -5,16 +5,10 @@ var crypto = require('crypto'),
     config = require('../config/config')
     pool = require('./dbConnection').pool;
 
-function generateAccessToken(user) {  
-    return jwt.sign(user, config.secret, {
-        expiresIn: 3600
-    });
-}
-
-function generateRefreshToken(user) {
+function generateAccessToken(user) {
     return new Promise((resolve, reject) => {
         var token = crypto.randomBytes(40).toString('hex');
-        var query = 'CALL spRefreshTokenCreate(?, ?)';
+        var query = 'CALL spAccessTokenCreate(?, ?)';
 
         var params = [
             user.id,
@@ -32,9 +26,9 @@ function generateRefreshToken(user) {
     });
 }
 
-function validateRefreshToken(token) {
+function verifyAccessToken(token) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spRefreshTokenGetUser(?)';
+        var query = 'CALL spAccessTokenGetUser(?)';
 
         var params = [token];
 
@@ -47,15 +41,15 @@ function validateRefreshToken(token) {
             if (results[0].length > 0) {
                 resolve(results[0][0]);
             } else {
-                reject('Invalid refresh token');
+                reject('Invalid access token');
             }
         });
     });
 }
 
-function rejectRefreshToken(token) {
+function rejectAccessToken(token) {
     return new Promise((resolve, reject) => {
-        var query = 'CALL spRefreshTokenDelete(?)';
+        var query = 'CALL spAccessTokenDelete(?)';
 
         var params = [token];
 
@@ -71,7 +65,6 @@ function rejectRefreshToken(token) {
 
 module.exports = {
     generateAccessToken: generateAccessToken,
-    generateRefreshToken: generateRefreshToken,
-    validateRefreshToken: validateRefreshToken,
-    rejectRefreshToken: rejectRefreshToken
+    rejectAccessToken: rejectAccessToken,
+    verifyAccessToken: verifyAccessToken
 };

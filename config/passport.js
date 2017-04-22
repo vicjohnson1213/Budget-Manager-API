@@ -1,14 +1,15 @@
 var passport = require('passport'),
     JwtStrategy = require('passport-jwt').Strategy,
     ExtractJwt = require('passport-jwt').ExtractJwt,
-    LocalStrategy = require('passport-local')
+    LocalStrategy = require('passport-local'),
+    BearerStrategy = require('passport-http-bearer'),
 
     db = require('../data/db'),
     config = require('../config/config');
 
 const localOptions = { usernameField: 'emailAddress' };
 
-const localLogin = new LocalStrategy(localOptions, function(emailAddress, password, done) {
+passport.use(new LocalStrategy(localOptions, function(emailAddress, password, done) {
     db.users.verifyPassword(emailAddress, password)
         .then((user) => {
             delete user.passwordSalt;
@@ -18,23 +19,11 @@ const localLogin = new LocalStrategy(localOptions, function(emailAddress, passwo
         }).catch(() => {
             callback('Invalid email address or password');
         });
-});
+}));
 
-
-const jwtOptions = {  
-    jwtFromRequest: ExtractJwt.fromAuthHeader(),
-    secretOrKey: config.secret
-};
-
-const jwtLogin = new JwtStrategy(jwtOptions, function(payload, done) {
-    db.users.get(payload.emailAddress)
+passport.use(new BearerStrategy(function(token, done) {
+    db.auth.verifyAccessToken(token)
         .then((user) => {
             done(null, user);
-        }).catch(() => {
-            done(null, false);
-        });
-});
-
-
-passport.use(jwtLogin);
-passport.use(localLogin);
+        }).catch(done);
+}));
