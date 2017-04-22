@@ -1,7 +1,5 @@
 var crypto = require('crypto'),
 
-    jwt = require('jsonwebtoken'),
-
     config = require('../config/config')
     pool = require('./dbConnection').pool;
 
