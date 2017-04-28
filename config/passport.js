@@ -1,6 +1,4 @@
 var passport = require('passport'),
-    JwtStrategy = require('passport-jwt').Strategy,
-    ExtractJwt = require('passport-jwt').ExtractJwt,
     LocalStrategy = require('passport-local'),
     BearerStrategy = require('passport-http-bearer'),
 
