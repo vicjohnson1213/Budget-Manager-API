@@ -7,7 +7,6 @@ var fs = require('fs'),
     logger = require('morgan'),
 
     api = require('./controllers/versions'),
-    config = require('./config/config'),
     db = require('./data/db'),
 
     app = express();

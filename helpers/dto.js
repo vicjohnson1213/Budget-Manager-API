@@ -1,5 +1,4 @@
-var consts = require('../consts'),
-    db = require('../data/db')
+var db = require('../data/db')
 
 function buildFinances(userId) {
     var incomePromise = db.incomeSources.getAll(userId);
@@ -33,7 +32,7 @@ function buildFinances(userId) {
                     var amountRemoved = (taxableIncome - over) * (rate/100);
                     var federalTaxes = (base + amountRemoved) - totalCredits;
 
-                    var ficaTax = consts.taxRates.fica.rate * totalIncome;
+                    var ficaTax = .0765 * totalIncome;
 
                     var estimatedTaxes = federalTaxes + ficaTax;
                     var estimatedNetIncome = totalIncome - estimatedTaxes;

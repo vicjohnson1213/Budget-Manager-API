@@ -2,8 +2,7 @@ var passport = require('passport'),
     LocalStrategy = require('passport-local'),
     BearerStrategy = require('passport-http-bearer'),
 
-    db = require('../data/db'),
-    config = require('../config/config');
+    db = require('../data/db');
 
 const localOptions = { usernameField: 'emailAddress' };
 
